@@ -16,7 +16,7 @@
  * @category   Zend
  * @package    Zend_Gdata
  * @subpackage Gapps
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  * @version    $Id$
  */
@@ -53,7 +53,7 @@ require_once 'Zend/Gdata/Gapps/Extension/EmailList.php';
  * @category   Zend
  * @package    Zend_Gdata
  * @subpackage Gapps
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Gdata_Gapps_EmailListEntry extends Zend_Gdata_Entry
@@ -108,6 +108,33 @@ class Zend_Gdata_Gapps_EmailListEntry extends Zend_Gdata_Entry
             $element->appendChild($feedLink->getDOM($element->ownerDocument));
         }
         return $element;
+    }
+
+    /**
+     * Creates individual Entry objects of the appropriate type and
+     * stores them as members of this entry based upon DOM data.
+     *
+     * @param DOMNode $child The DOMNode to process
+     */
+    protected function takeChildFromDOM($child)
+    {
+        $absoluteNodeName = $child->namespaceURI . ':' . $child->localName;
+
+        switch ($absoluteNodeName) {
+            case $this->lookupNamespace('apps') . ':' . 'emailList';
+                $emailList = new Zend_Gdata_Gapps_Extension_EmailList();
+                $emailList->transferFromDOM($child);
+                $this->_emailList = $emailList;
+                break;
+            case $this->lookupNamespace('gd') . ':' . 'feedLink';
+                $feedLink = new Zend_Gdata_Extension_FeedLink();
+                $feedLink->transferFromDOM($child);
+                $this->_feedLink[] = $feedLink;
+                break;
+            default:
+                parent::takeChildFromDOM($child);
+                break;
+        }
     }
 
     /**
@@ -182,33 +209,6 @@ class Zend_Gdata_Gapps_EmailListEntry extends Zend_Gdata_Entry
     {
         $this->_feedLink = $value;
         return $this;
-    }
-
-    /**
-     * Creates individual Entry objects of the appropriate type and
-     * stores them as members of this entry based upon DOM data.
-     *
-     * @param DOMNode $child The DOMNode to process
-     */
-    protected function takeChildFromDOM($child)
-    {
-        $absoluteNodeName = $child->namespaceURI . ':' . $child->localName;
-
-        switch ($absoluteNodeName) {
-            case $this->lookupNamespace('apps') . ':' . 'emailList';
-                $emailList = new Zend_Gdata_Gapps_Extension_EmailList();
-                $emailList->transferFromDOM($child);
-                $this->_emailList = $emailList;
-                break;
-            case $this->lookupNamespace('gd') . ':' . 'feedLink';
-                $feedLink = new Zend_Gdata_Extension_FeedLink();
-                $feedLink->transferFromDOM($child);
-                $this->_feedLink[] = $feedLink;
-                break;
-            default:
-                parent::takeChildFromDOM($child);
-                break;
-        }
     }
 
 }

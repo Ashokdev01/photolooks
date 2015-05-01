@@ -16,7 +16,7 @@
  * @category   Zend
  * @package    Zend_Gdata
  * @subpackage Media
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  * @version    $Id$
  */
@@ -32,7 +32,7 @@ require_once 'Zend/Gdata/App/Extension.php';
  * @category   Zend
  * @package    Zend_Gdata
  * @subpackage Media
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Gdata_Media_Extension_MediaCategory extends Zend_Gdata_Extension
@@ -50,9 +50,9 @@ class Zend_Gdata_Media_Extension_MediaCategory extends Zend_Gdata_Extension
     /**
      * Creates an individual MediaCategory object.
      *
-     * @param string $text Indication of the type and content of the media
-     * @param string $scheme URI that identifies the categorization scheme
-     * @param string $label Human-readable label to be displayed in applications
+     * @param string $text      Indication of the type and content of the media
+     * @param string $scheme    URI that identifies the categorization scheme
+     * @param string $label     Human-readable label to be displayed in applications
      */
     public function __construct($text = null, $scheme = null, $label = null)
     {
@@ -86,6 +86,27 @@ class Zend_Gdata_Media_Extension_MediaCategory extends Zend_Gdata_Extension
     }
 
     /**
+     * Given a DOMNode representing an attribute, tries to map the data into
+     * instance members.  If no mapping is defined, the name and value are
+     * stored in an array.
+     *
+     * @param DOMNode $attribute The DOMNode attribute needed to be handled
+     */
+    protected function takeAttributeFromDOM($attribute)
+    {
+        switch ($attribute->localName) {
+        case 'scheme':
+            $this->_scheme = $attribute->nodeValue;
+            break;
+        case 'label':
+            $this->_label = $attribute->nodeValue;
+            break;
+        default:
+            parent::takeAttributeFromDOM($attribute);
+        }
+    }
+
+    /**
      * Returns the URI that identifies the categorization scheme
      * Optional.
      *
@@ -97,7 +118,7 @@ class Zend_Gdata_Media_Extension_MediaCategory extends Zend_Gdata_Extension
     }
 
     /**
-     * @param string $value URI that identifies the categorization scheme
+     * @param string $value     URI that identifies the categorization scheme
      * @return Zend_Gdata_Media_Extension_MediaCategory Provides a fluent interface
      */
     public function setScheme($value)
@@ -115,34 +136,13 @@ class Zend_Gdata_Media_Extension_MediaCategory extends Zend_Gdata_Extension
     }
 
     /**
-     * @param string $value Human-readable label to be displayed in applications
+     * @param string $value     Human-readable label to be displayed in applications
      * @return Zend_Gdata_Media_Extension_MediaCategory Provides a fluent interface
      */
     public function setLabel($value)
     {
         $this->_label = $value;
         return $this;
-    }
-
-    /**
-     * Given a DOMNode representing an attribute, tries to map the data into
-     * instance members.  If no mapping is defined, the name and value are
-     * stored in an array.
-     *
-     * @param DOMNode $attribute The DOMNode attribute needed to be handled
-     */
-    protected function takeAttributeFromDOM($attribute)
-    {
-        switch ($attribute->localName) {
-            case 'scheme':
-                $this->_scheme = $attribute->nodeValue;
-                break;
-            case 'label':
-                $this->_label = $attribute->nodeValue;
-                break;
-            default:
-                parent::takeAttributeFromDOM($attribute);
-        }
     }
 
 }

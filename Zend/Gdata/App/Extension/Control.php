@@ -16,7 +16,7 @@
  * @category   Zend
  * @package    Zend_Gdata
  * @subpackage App
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  * @version    $Id$
  */
@@ -37,7 +37,7 @@ require_once 'Zend/Gdata/App/Extension/Draft.php';
  * @category   Zend
  * @package    Zend_Gdata
  * @subpackage App
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Gdata_App_Extension_Control extends Zend_Gdata_App_Extension
@@ -62,6 +62,21 @@ class Zend_Gdata_App_Extension_Control extends Zend_Gdata_App_Extension
         return $element;
     }
 
+    protected function takeChildFromDOM($child)
+    {
+        $absoluteNodeName = $child->namespaceURI . ':' . $child->localName;
+        switch ($absoluteNodeName) {
+        case $this->lookupNamespace('app') . ':' . 'draft':
+            $draft = new Zend_Gdata_App_Extension_Draft();
+            $draft->transferFromDOM($child);
+            $this->_draft = $draft;
+            break;
+        default:
+            parent::takeChildFromDOM($child);
+            break;
+        }
+    }
+
     /**
      * @return Zend_Gdata_App_Extension_Draft
      */
@@ -78,21 +93,6 @@ class Zend_Gdata_App_Extension_Control extends Zend_Gdata_App_Extension
     {
         $this->_draft = $value;
         return $this;
-    }
-
-    protected function takeChildFromDOM($child)
-    {
-        $absoluteNodeName = $child->namespaceURI . ':' . $child->localName;
-        switch ($absoluteNodeName) {
-            case $this->lookupNamespace('app') . ':' . 'draft':
-                $draft = new Zend_Gdata_App_Extension_Draft();
-                $draft->transferFromDOM($child);
-                $this->_draft = $draft;
-                break;
-            default:
-                parent::takeChildFromDOM($child);
-                break;
-        }
     }
 
 }

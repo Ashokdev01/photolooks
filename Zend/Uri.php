@@ -14,7 +14,7 @@
  *
  * @category  Zend
  * @package   Zend_Uri
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd     New BSD License
  * @version   $Id$
  */
@@ -24,19 +24,11 @@
  *
  * @category  Zend
  * @package   Zend_Uri
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd     New BSD License
  */
 abstract class Zend_Uri
 {
-    /**
-     * Global configuration array
-     *
-     * @var array
-     */
-    static protected $_config = array(
-        'allow_unwise' => false
-    );
     /**
      * Scheme of this URI (http, ftp, etc.)
      *
@@ -45,13 +37,29 @@ abstract class Zend_Uri
     protected $_scheme = '';
 
     /**
-     * Zend_Uri and its subclasses cannot be instantiated directly.
-     * Use Zend_Uri::factory() to return a new Zend_Uri object.
+     * Global configuration array
      *
-     * @param string $scheme The scheme of the URI
-     * @param string $schemeSpecific The scheme-specific part of the URI
+     * @var array
      */
-    abstract protected function __construct($scheme, $schemeSpecific = '');
+    static protected $_config = array(
+        'allow_unwise' => false
+    );
+
+    /**
+     * Return a string representation of this URI.
+     *
+     * @see    getUri()
+     * @return string
+     */
+    public function __toString()
+    {
+        try {
+            return $this->getUri();
+        } catch (Exception $e) {
+            trigger_error($e->getMessage(), E_USER_WARNING);
+            return '';
+        }
+    }
 
     /**
      * Convenience function, checks that a $uri string is well-formed
@@ -76,7 +84,7 @@ abstract class Zend_Uri
      * Create a new Zend_Uri object for a URI.  If building a new URI, then $uri should contain
      * only the scheme (http, ftp, etc).  Otherwise, supply $uri with the complete URI.
      *
-     * @param  string $uri The URI form which a Zend_Uri instance is created
+     * @param  string $uri       The URI form which a Zend_Uri instance is created
      * @param  string $className The name of the class to use in order to manipulate URI
      * @throws Zend_Uri_Exception When an empty string was supplied for the scheme
      * @throws Zend_Uri_Exception When an illegal scheme is supplied
@@ -88,8 +96,8 @@ abstract class Zend_Uri
     public static function factory($uri = 'http', $className = null)
     {
         // Separate the scheme from the scheme-specific parts
-        $uri = explode(':', $uri, 2);
-        $scheme = strtolower($uri[0]);
+        $uri            = explode(':', $uri, 2);
+        $scheme         = strtolower($uri[0]);
         $schemeSpecific = isset($uri[1]) === true ? $uri[1] : '';
 
         if (strlen($scheme) === 0) {
@@ -134,7 +142,7 @@ abstract class Zend_Uri
 
         $schemeHandler = new $className($scheme, $schemeSpecific);
 
-        if (!$schemeHandler instanceof Zend_Uri) {
+        if (! $schemeHandler instanceof Zend_Uri) {
             require_once 'Zend/Uri/Exception.php';
             throw new Zend_Uri_Exception("\"$className\" is not an instance of Zend_Uri");
         }
@@ -143,11 +151,18 @@ abstract class Zend_Uri
     }
 
     /**
-     * Returns TRUE if this URI is valid, or FALSE otherwise.
+     * Get the URI's scheme
      *
-     * @return boolean
+     * @return string|false Scheme or false if no scheme is set.
      */
-    abstract public function valid();
+    public function getScheme()
+    {
+        if (empty($this->_scheme) === false) {
+            return $this->_scheme;
+        } else {
+            return false;
+        }
+    }
 
     /**
      * Set global configuration options
@@ -168,20 +183,13 @@ abstract class Zend_Uri
     }
 
     /**
-     * Return a string representation of this URI.
+     * Zend_Uri and its subclasses cannot be instantiated directly.
+     * Use Zend_Uri::factory() to return a new Zend_Uri object.
      *
-     * @see    getUri()
-     * @return string
+     * @param string $scheme         The scheme of the URI
+     * @param string $schemeSpecific The scheme-specific part of the URI
      */
-    public function __toString()
-    {
-        try {
-            return $this->getUri();
-        } catch (Exception $e) {
-            trigger_error($e->getMessage(), E_USER_WARNING);
-            return '';
-        }
-    }
+    abstract protected function __construct($scheme, $schemeSpecific = '');
 
     /**
      * Return a string representation of this URI.
@@ -191,16 +199,9 @@ abstract class Zend_Uri
     abstract public function getUri();
 
     /**
-     * Get the URI's scheme
+     * Returns TRUE if this URI is valid, or FALSE otherwise.
      *
-     * @return string|false Scheme or false if no scheme is set.
+     * @return boolean
      */
-    public function getScheme()
-    {
-        if (empty($this->_scheme) === false) {
-            return $this->_scheme;
-        } else {
-            return false;
-        }
-    }
+    abstract public function valid();
 }

@@ -16,7 +16,7 @@
  * @category   Zend
  * @package    Zend_Gdata
  * @subpackage Geo
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  * @version    $Id$
  */
@@ -43,7 +43,7 @@ require_once 'Zend/Gdata/Geo/Extension/GmlPoint.php';
  * @category   Zend
  * @package    Zend_Gdata
  * @subpackage Geo
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Gdata_Geo_Extension_GeoRssWhere extends Zend_Gdata_Extension
@@ -91,6 +91,25 @@ class Zend_Gdata_Geo_Extension_GeoRssWhere extends Zend_Gdata_Extension
     }
 
     /**
+     * Creates individual Entry objects of the appropriate type and
+     * stores them as members of this entry based upon DOM data.
+     *
+     * @param DOMNode $child The DOMNode to process
+     */
+    protected function takeChildFromDOM($child)
+    {
+        $absoluteNodeName = $child->namespaceURI . ':' . $child->localName;
+
+        switch ($absoluteNodeName) {
+            case $this->lookupNamespace('gml') . ':' . 'Point';
+                $point = new Zend_Gdata_Geo_Extension_GmlPoint();
+                $point->transferFromDOM($child);
+                $this->_point = $point;
+                break;
+        }
+    }
+
+    /**
      * Get the value for this element's point attribute.
      *
      * @see setPoint
@@ -111,25 +130,6 @@ class Zend_Gdata_Geo_Extension_GeoRssWhere extends Zend_Gdata_Extension
     {
         $this->_point = $value;
         return $this;
-    }
-
-    /**
-     * Creates individual Entry objects of the appropriate type and
-     * stores them as members of this entry based upon DOM data.
-     *
-     * @param DOMNode $child The DOMNode to process
-     */
-    protected function takeChildFromDOM($child)
-    {
-        $absoluteNodeName = $child->namespaceURI . ':' . $child->localName;
-
-        switch ($absoluteNodeName) {
-            case $this->lookupNamespace('gml') . ':' . 'Point';
-                $point = new Zend_Gdata_Geo_Extension_GmlPoint();
-                $point->transferFromDOM($child);
-                $this->_point = $point;
-                break;
-        }
     }
 
 }

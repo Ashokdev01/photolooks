@@ -17,7 +17,7 @@
  * @package    Zend_Http
  * @subpackage Client_Adapter
  * @version    $Id$
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 
@@ -30,7 +30,7 @@
  * @category   Zend
  * @package    Zend_Http
  * @subpackage Client_Adapter
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 interface Zend_Http_Client_Adapter_Interface
@@ -45,8 +45,8 @@ interface Zend_Http_Client_Adapter_Interface
     /**
      * Connect to the remote server
      *
-     * @param string $host
-     * @param int $port
+     * @param string  $host
+     * @param int     $port
      * @param boolean $secure
      */
     public function connect($host, $port = 80, $secure = false);
@@ -54,11 +54,11 @@ interface Zend_Http_Client_Adapter_Interface
     /**
      * Send request to the remote server
      *
-     * @param string $method
+     * @param string        $method
      * @param Zend_Uri_Http $url
-     * @param string $http_ver
-     * @param array $headers
-     * @param string $body
+     * @param string        $http_ver
+     * @param array         $headers
+     * @param string        $body
      * @return string Request as text
      */
     public function write($method, $url, $http_ver = '1.1', $headers = array(), $body = '');

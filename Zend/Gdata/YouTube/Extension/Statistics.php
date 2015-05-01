@@ -16,7 +16,7 @@
  * @category   Zend
  * @package    Zend_Gdata
  * @subpackage YouTube
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  * @version    $Id$
  */
@@ -32,7 +32,7 @@ require_once 'Zend/Gdata/Extension.php';
  * @category   Zend
  * @package    Zend_Gdata
  * @subpackage YouTube
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Gdata_YouTube_Extension_Statistics extends Zend_Gdata_Extension
@@ -92,15 +92,15 @@ class Zend_Gdata_YouTube_Extension_Statistics extends Zend_Gdata_Extension
 
     /**
      * Constructs a new Zend_Gdata_YouTube_Extension_Statistics object.
-     * @param string $viewCount (optional) The viewCount value
-     * @param string $videoWatchCount (optional) The videoWatchCount value
-     * @param string $subscriberCount (optional) The subscriberCount value
-     * @param string $lastWebAccess (optional) The lastWebAccess value
-     * @param string $favoriteCount (optional) The favoriteCount value
+     * @param string $viewCount(optional) The viewCount value
+     * @param string $videoWatchCount(optional) The videoWatchCount value
+     * @param string $subscriberCount(optional) The subscriberCount value
+     * @param string $lastWebAccess(optional) The lastWebAccess value
+     * @param string $favoriteCount(optional) The favoriteCount value
      */
     public function __construct($viewCount = null, $videoWatchCount = null,
-                                $subscriberCount = null, $lastWebAccess = null,
-                                $favoriteCount = null)
+        $subscriberCount = null, $lastWebAccess = null,
+        $favoriteCount = null)
     {
         $this->registerAllNamespaces(Zend_Gdata_YouTube::$namespaces);
         parent::__construct();
@@ -143,6 +143,37 @@ class Zend_Gdata_YouTube_Extension_Statistics extends Zend_Gdata_Extension
                 $this->_favoriteCount);
         }
         return $element;
+    }
+
+    /**
+     * Given a DOMNode representing an attribute, tries to map the data into
+     * instance members.  If no mapping is defined, the name and valueare
+     * stored in an array.
+     * TODO: Convert attributes to proper types
+     *
+     * @param DOMNode $attribute The DOMNode attribute needed to be handled
+     */
+    protected function takeAttributeFromDOM($attribute)
+    {
+        switch ($attribute->localName) {
+        case 'videoWatchCount':
+            $this->_videoWatchCount = $attribute->nodeValue;
+            break;
+        case 'viewCount':
+            $this->_viewCount = $attribute->nodeValue;
+            break;
+        case 'subscriberCount':
+            $this->_subscriberCount = $attribute->nodeValue;
+            break;
+        case 'lastWebAccess':
+            $this->_lastWebAccess = $attribute->nodeValue;
+            break;
+        case 'favoriteCount':
+            $this->_favoriteCount = $attribute->nodeValue;
+            break;
+        default:
+            parent::takeAttributeFromDOM($attribute);
+        }
     }
 
     /**
@@ -269,41 +300,10 @@ class Zend_Gdata_YouTube_Extension_Statistics extends Zend_Gdata_Extension
     public function __toString()
     {
         return 'View Count=' . $this->_viewCount .
-        ' VideoWatchCount=' . $this->_videoWatchCount .
-        ' SubscriberCount=' . $this->_subscriberCount .
-        ' LastWebAccess=' . $this->_lastWebAccess .
-        ' FavoriteCount=' . $this->_favoriteCount;
-    }
-
-    /**
-     * Given a DOMNode representing an attribute, tries to map the data into
-     * instance members.  If no mapping is defined, the name and valueare
-     * stored in an array.
-     * TODO: Convert attributes to proper types
-     *
-     * @param DOMNode $attribute The DOMNode attribute needed to be handled
-     */
-    protected function takeAttributeFromDOM($attribute)
-    {
-        switch ($attribute->localName) {
-            case 'videoWatchCount':
-                $this->_videoWatchCount = $attribute->nodeValue;
-                break;
-            case 'viewCount':
-                $this->_viewCount = $attribute->nodeValue;
-                break;
-            case 'subscriberCount':
-                $this->_subscriberCount = $attribute->nodeValue;
-                break;
-            case 'lastWebAccess':
-                $this->_lastWebAccess = $attribute->nodeValue;
-                break;
-            case 'favoriteCount':
-                $this->_favoriteCount = $attribute->nodeValue;
-                break;
-            default:
-                parent::takeAttributeFromDOM($attribute);
-        }
+            ' VideoWatchCount=' . $this->_videoWatchCount .
+            ' SubscriberCount=' . $this->_subscriberCount .
+            ' LastWebAccess=' . $this->_lastWebAccess .
+            ' FavoriteCount=' . $this->_favoriteCount;
     }
 
 }

@@ -16,7 +16,7 @@
  * @category   Zend
  * @package    Zend_Gdata
  * @subpackage YouTube
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  * @version    $Id$
  */
@@ -53,7 +53,7 @@ require_once 'Zend/Gdata/YouTube/Extension/Description.php';
  * @category   Zend
  * @package    Zend_Gdata
  * @subpackage YouTube
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Gdata_YouTube_InboxEntry extends Zend_Gdata_Media_Entry
@@ -132,6 +132,42 @@ class Zend_Gdata_YouTube_InboxEntry extends Zend_Gdata_Media_Entry
                 $this->_comments->getDOM($element->ownerDocument));
         }
         return $element;
+    }
+
+    /**
+     * Creates individual Entry objects of the appropriate type and
+     * stores them in the $_entry array based upon DOM data.
+     *
+     * @param DOMNode $child The DOMNode to process
+     */
+    protected function takeChildFromDOM($child)
+    {
+        $absoluteNodeName = $child->namespaceURI . ':' . $child->localName;
+        switch ($absoluteNodeName) {
+            case $this->lookupNamespace('gd') . ':' . 'comments':
+                $comments = new Zend_Gdata_Extension_Comments();
+                $comments->transferFromDOM($child);
+                $this->_comments = $comments;
+                break;
+            case $this->lookupNamespace('gd') . ':' . 'rating':
+                $rating = new Zend_Gdata_Extension_Rating();
+                $rating->transferFromDOM($child);
+                $this->_rating = $rating;
+                break;
+            case $this->lookupNamespace('yt') . ':' . 'description':
+                $description = new Zend_Gdata_YouTube_Extension_Description();
+                $description->transferFromDOM($child);
+                $this->_description = $description;
+                break;
+            case $this->lookupNamespace('yt') . ':' . 'statistics':
+                $statistics = new Zend_Gdata_YouTube_Extension_Statistics();
+                $statistics->transferFromDOM($child);
+                $this->_statistics = $statistics;
+                break;
+            default:
+                parent::takeChildFromDOM($child);
+                break;
+        }
     }
 
     /**
@@ -239,42 +275,6 @@ class Zend_Gdata_YouTube_InboxEntry extends Zend_Gdata_Media_Entry
     {
         $this->_statistics = $statistics;
         return $this;
-    }
-
-    /**
-     * Creates individual Entry objects of the appropriate type and
-     * stores them in the $_entry array based upon DOM data.
-     *
-     * @param DOMNode $child The DOMNode to process
-     */
-    protected function takeChildFromDOM($child)
-    {
-        $absoluteNodeName = $child->namespaceURI . ':' . $child->localName;
-        switch ($absoluteNodeName) {
-            case $this->lookupNamespace('gd') . ':' . 'comments':
-                $comments = new Zend_Gdata_Extension_Comments();
-                $comments->transferFromDOM($child);
-                $this->_comments = $comments;
-                break;
-            case $this->lookupNamespace('gd') . ':' . 'rating':
-                $rating = new Zend_Gdata_Extension_Rating();
-                $rating->transferFromDOM($child);
-                $this->_rating = $rating;
-                break;
-            case $this->lookupNamespace('yt') . ':' . 'description':
-                $description = new Zend_Gdata_YouTube_Extension_Description();
-                $description->transferFromDOM($child);
-                $this->_description = $description;
-                break;
-            case $this->lookupNamespace('yt') . ':' . 'statistics':
-                $statistics = new Zend_Gdata_YouTube_Extension_Statistics();
-                $statistics->transferFromDOM($child);
-                $this->_statistics = $statistics;
-                break;
-            default:
-                parent::takeChildFromDOM($child);
-                break;
-        }
     }
 
 

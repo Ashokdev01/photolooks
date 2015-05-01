@@ -16,7 +16,7 @@
  * @category   Zend
  * @package    Zend_Gdata
  * @subpackage Gapps
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  * @version    $Id$
  */
@@ -53,7 +53,7 @@ require_once 'Zend/Gdata/Gapps/Extension/Nickname.php';
  * @category   Zend
  * @package    Zend_Gdata
  * @subpackage Gapps
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Gdata_Gapps_NicknameEntry extends Zend_Gdata_Entry
@@ -110,6 +110,33 @@ class Zend_Gdata_Gapps_NicknameEntry extends Zend_Gdata_Entry
     }
 
     /**
+     * Creates individual Entry objects of the appropriate type and
+     * stores them as members of this entry based upon DOM data.
+     *
+     * @param DOMNode $child The DOMNode to process
+     */
+    protected function takeChildFromDOM($child)
+    {
+        $absoluteNodeName = $child->namespaceURI . ':' . $child->localName;
+
+        switch ($absoluteNodeName) {
+            case $this->lookupNamespace('apps') . ':' . 'login';
+                $login = new Zend_Gdata_Gapps_Extension_Login();
+                $login->transferFromDOM($child);
+                $this->_login = $login;
+                break;
+            case $this->lookupNamespace('apps') . ':' . 'nickname';
+                $nickname = new Zend_Gdata_Gapps_Extension_Nickname();
+                $nickname->transferFromDOM($child);
+                $this->_nickname = $nickname;
+                break;
+            default:
+                parent::takeChildFromDOM($child);
+                break;
+        }
+    }
+
+    /**
      * Get the value of the login property for this object.
      *
      * @see setLogin
@@ -157,33 +184,6 @@ class Zend_Gdata_Gapps_NicknameEntry extends Zend_Gdata_Entry
     {
         $this->_nickname = $value;
         return $this;
-    }
-
-    /**
-     * Creates individual Entry objects of the appropriate type and
-     * stores them as members of this entry based upon DOM data.
-     *
-     * @param DOMNode $child The DOMNode to process
-     */
-    protected function takeChildFromDOM($child)
-    {
-        $absoluteNodeName = $child->namespaceURI . ':' . $child->localName;
-
-        switch ($absoluteNodeName) {
-            case $this->lookupNamespace('apps') . ':' . 'login';
-                $login = new Zend_Gdata_Gapps_Extension_Login();
-                $login->transferFromDOM($child);
-                $this->_login = $login;
-                break;
-            case $this->lookupNamespace('apps') . ':' . 'nickname';
-                $nickname = new Zend_Gdata_Gapps_Extension_Nickname();
-                $nickname->transferFromDOM($child);
-                $this->_nickname = $nickname;
-                break;
-            default:
-                parent::takeChildFromDOM($child);
-                break;
-        }
     }
 
 }

@@ -16,7 +16,7 @@
  * @category   Zend
  * @package    Zend_Gdata
  * @subpackage Docs
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  * @version    $Id$
  */
@@ -53,7 +53,7 @@ require_once 'Zend/Gdata/App/Extension/Title.php';
  * @category   Zend
  * @package    Zend_Gdata
  * @subpackage Docs
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Gdata_Docs extends Zend_Gdata
@@ -63,31 +63,33 @@ class Zend_Gdata_Docs extends Zend_Gdata
     const DOCUMENTS_CATEGORY_SCHEMA = 'http://schemas.google.com/g/2005#kind';
     const DOCUMENTS_CATEGORY_TERM = 'http://schemas.google.com/docs/2007#folder';
     const AUTH_SERVICE_NAME = 'writely';
-    /**
-     * @var array
-     */
-    protected static $SUPPORTED_FILETYPES = array(
-        'TXT' => 'text/plain',
-        'CSV' => 'text/csv',
-        'TSV' => 'text/tab-separated-values',
-        'TAB' => 'text/tab-separated-values',
-        'HTML' => 'text/html',
-        'HTM' => 'text/html',
-        'DOC' => 'application/msword',
-        'DOCX' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-        'ODS' => 'application/vnd.oasis.opendocument.spreadsheet',
-        'ODT' => 'application/vnd.oasis.opendocument.text',
-        'RTF' => 'application/rtf',
-        'SXW' => 'application/vnd.sun.xml.writer',
-        'XLS' => 'application/vnd.ms-excel',
-        'XLSX' => 'application/vnd.ms-excel',
-        'PPT' => 'application/vnd.ms-powerpoint',
-        'PPS' => 'application/vnd.ms-powerpoint'
-    );
+
     /**
      * @var string
      */
     protected $_defaultPostUri = self::DOCUMENTS_LIST_FEED_URI;
+
+    /**
+     * @var array
+     */
+    protected static $SUPPORTED_FILETYPES = array(
+        'TXT'  => 'text/plain',
+        'CSV'  => 'text/csv',
+        'TSV'  => 'text/tab-separated-values',
+        'TAB'  => 'text/tab-separated-values',
+        'HTML' => 'text/html',
+        'HTM'  => 'text/html',
+        'DOC'  => 'application/msword',
+        'DOCX' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        'ODS'  => 'application/vnd.oasis.opendocument.spreadsheet',
+        'ODT'  => 'application/vnd.oasis.opendocument.text',
+        'RTF'  => 'application/rtf',
+        'SXW'  => 'application/vnd.sun.xml.writer',
+        'XLS'  => 'application/vnd.ms-excel',
+        'XLSX' => 'application/vnd.ms-excel',
+        'PPT'  => 'application/vnd.ms-powerpoint',
+        'PPS'  => 'application/vnd.ms-powerpoint'
+    );
 
     /**
      * Create Gdata_Docs object
@@ -101,6 +103,21 @@ class Zend_Gdata_Docs extends Zend_Gdata
         $this->registerPackage('Zend_Gdata_Docs');
         parent::__construct($client, $applicationId);
         $this->_httpClient->setParameterPost('service', self::AUTH_SERVICE_NAME);
+    }
+
+    /**
+     * Looks up the mime type based on the file name extension. For example,
+     * calling this method with 'csv' would return
+     * 'text/comma-separated-values'. The Mime type is sent as a header in
+     * the upload HTTP POST request.
+     *
+     * @param string $fileExtension
+     * @return string The mime type to be sent to the server to tell it how the
+     *          multipart mime data should be interpreted.
+     */
+    public static function lookupMimeType($fileExtension)
+    {
+        return self::$SUPPORTED_FILETYPES[strtoupper($fileExtension)];
     }
 
     /**
@@ -122,14 +139,25 @@ class Zend_Gdata_Docs extends Zend_Gdata
     }
 
     /**
-     * Retreive entry object for the desired word processing document.
+     * Retreive entry object representing a single document.
      *
-     * @param string $id The URL id for the document. Example: dcmg89gw_62hfjj8m
+     * @param mixed $location The location for the entry, as a URL or Query
      * @return Zend_Gdata_Docs_DocumentListEntry
+     * @throws Zend_Gdata_App_InvalidArgumentException
      */
-    public function getDocument($id)
+    public function getDocumentListEntry($location = null)
     {
-        return $this->getDoc($id, 'document');
+        if ($location === null) {
+            require_once 'Zend/Gdata/App/InvalidArgumentException.php';
+            throw new Zend_Gdata_App_InvalidArgumentException(
+                    'Location must not be null'
+            );
+        } else if ($location instanceof Zend_Gdata_Query) {
+            $uri = $location->getQueryUrl();
+        } else {
+            $uri = $location;
+        }
+        return parent::getEntry($uri, 'Zend_Gdata_Docs_DocumentListEntry');
     }
 
     /**
@@ -152,25 +180,14 @@ class Zend_Gdata_Docs extends Zend_Gdata
     }
 
     /**
-     * Retreive entry object representing a single document.
+     * Retreive entry object for the desired word processing document.
      *
-     * @param mixed $location The location for the entry, as a URL or Query
+     * @param string $id The URL id for the document. Example: dcmg89gw_62hfjj8m
      * @return Zend_Gdata_Docs_DocumentListEntry
-     * @throws Zend_Gdata_App_InvalidArgumentException
      */
-    public function getDocumentListEntry($location = null)
+    public function getDocument($id)
     {
-        if ($location === null) {
-            require_once 'Zend/Gdata/App/InvalidArgumentException.php';
-            throw new Zend_Gdata_App_InvalidArgumentException(
-                'Location must not be null'
-            );
-        } else if ($location instanceof Zend_Gdata_Query) {
-            $uri = $location->getQueryUrl();
-        } else {
-            $uri = $location;
-        }
-        return parent::getEntry($uri, 'Zend_Gdata_Docs_DocumentListEntry');
+        return $this->getDoc($id, 'document');
     }
 
     /**
@@ -218,7 +235,7 @@ class Zend_Gdata_Docs extends Zend_Gdata
      *         created Google Document.
      */
     public function uploadFile($fileLocation, $title = null, $mimeType = null,
-                               $uri = null
+        $uri = null
     )
     {
         // Set the URI to which the file will be uploaded.
@@ -241,9 +258,9 @@ class Zend_Gdata_Docs extends Zend_Gdata
 
         // Set the mime type of the data.
         if ($mimeType === null) {
-            $filenameParts = explode('.', $fileLocation);
-            $fileExtension = end($filenameParts);
-            $mimeType = self::lookupMimeType($fileExtension);
+          $filenameParts = explode('.', $fileLocation);
+          $fileExtension = end($filenameParts);
+          $mimeType = self::lookupMimeType($fileExtension);
         }
 
         // Set the mime type for the upload request.
@@ -251,40 +268,6 @@ class Zend_Gdata_Docs extends Zend_Gdata
 
         // Send the data to the server.
         return $this->insertDocument($fs, $uri);
-    }
-
-    /**
-     * Looks up the mime type based on the file name extension. For example,
-     * calling this method with 'csv' would return
-     * 'text/comma-separated-values'. The Mime type is sent as a header in
-     * the upload HTTP POST request.
-     *
-     * @param string $fileExtension
-     * @return string The mime type to be sent to the server to tell it how the
-     *          multipart mime data should be interpreted.
-     */
-    public static function lookupMimeType($fileExtension)
-    {
-        return self::$SUPPORTED_FILETYPES[strtoupper($fileExtension)];
-    }
-
-    /**
-     * Inserts an entry to a given URI and returns the response as an Entry.
-     *
-     * @param mixed $data The Zend_Gdata_Docs_DocumentListEntry or media
-     *         source to post. If it is a DocumentListEntry, the mediaSource
-     *         should already have been set. If $data is a mediaSource, it
-     *         should have the correct slug header and mime type.
-     * @param string $uri POST URI
-     * @param string $className (optional) The class of entry to be returned.
-     *         The default is a 'Zend_Gdata_Docs_DocumentListEntry'.
-     * @return Zend_Gdata_Docs_DocumentListEntry The entry returned by the
-     *     service after insertion.
-     */
-    public function insertDocument($data, $uri,
-                                   $className = 'Zend_Gdata_Docs_DocumentListEntry')
-    {
-        return $this->insertEntry($data, $uri, $className);
     }
 
     /**
@@ -303,8 +286,8 @@ class Zend_Gdata_Docs extends Zend_Gdata
             self::DOCUMENTS_CATEGORY_TERM,
             self::DOCUMENTS_CATEGORY_SCHEMA
         );
-        $title = new Zend_Gdata_App_Extension_Title($folderName);
-        $entry = new Zend_Gdata_Entry();
+        $title    = new Zend_Gdata_App_Extension_Title($folderName);
+        $entry    = new Zend_Gdata_Entry();
 
         $entry->setCategory(array($category));
         $entry->setTitle($title);
@@ -315,5 +298,24 @@ class Zend_Gdata_Docs extends Zend_Gdata
         }
 
         return $this->insertEntry($entry, $uri);
+    }
+
+    /**
+     * Inserts an entry to a given URI and returns the response as an Entry.
+     *
+     * @param mixed  $data The Zend_Gdata_Docs_DocumentListEntry or media
+     *         source to post. If it is a DocumentListEntry, the mediaSource
+     *         should already have been set. If $data is a mediaSource, it
+     *         should have the correct slug header and mime type.
+     * @param string $uri POST URI
+     * @param string $className (optional) The class of entry to be returned.
+     *         The default is a 'Zend_Gdata_Docs_DocumentListEntry'.
+     * @return Zend_Gdata_Docs_DocumentListEntry The entry returned by the
+     *     service after insertion.
+     */
+    public function insertDocument($data, $uri,
+        $className = 'Zend_Gdata_Docs_DocumentListEntry')
+    {
+        return $this->insertEntry($data, $uri, $className);
     }
 }

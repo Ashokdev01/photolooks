@@ -15,7 +15,7 @@
  * @category   Zend
  * @package    Zend_Gdata
  * @subpackage Analytics
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  * @version    $Id$
  */
@@ -78,7 +78,7 @@ class Zend_Gdata_Analytics_AccountEntry extends Zend_Gdata_Entry
     protected function takeChildFromDOM($child)
     {
         $absoluteNodeName = $child->namespaceURI . ':' . $child->localName;
-        switch ($absoluteNodeName) {
+        switch ($absoluteNodeName){
             case $this->lookupNamespace('analytics') . ':' . 'property';
                 $property = new Zend_Gdata_Analytics_Extension_Property();
                 $property->transferFromDOM($child);

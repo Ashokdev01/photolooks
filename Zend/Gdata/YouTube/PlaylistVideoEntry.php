@@ -16,7 +16,7 @@
  * @category   Zend
  * @package    Zend_Gdata
  * @subpackage YouTube
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  * @version    $Id$
  */
@@ -37,7 +37,7 @@ require_once 'Zend/Gdata/YouTube/Extension/Position.php';
  * @category   Zend
  * @package    Zend_Gdata
  * @subpackage YouTube
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Gdata_YouTube_PlaylistVideoEntry extends Zend_Gdata_YouTube_VideoEntry
@@ -85,14 +85,26 @@ class Zend_Gdata_YouTube_PlaylistVideoEntry extends Zend_Gdata_YouTube_VideoEntr
     }
 
     /**
-     * Returns the position of the entry in the feed, as specified by the user
+     * Creates individual Entry objects of the appropriate type and
+     * stores them in the $_entry array based upon DOM data.
      *
-     * @return Zend_Gdata_YouTube_Extension_Position The position
+     * @param DOMNode $child The DOMNode to process
      */
-    public function getPosition()
+    protected function takeChildFromDOM($child)
     {
-        return $this->_position;
+        $absoluteNodeName = $child->namespaceURI . ':' . $child->localName;
+        switch ($absoluteNodeName) {
+        case $this->lookupNamespace('yt') . ':' . 'position':
+            $position = new Zend_Gdata_YouTube_Extension_Position();
+            $position->transferFromDOM($child);
+            $this->_position = $position;
+            break;
+        default:
+            parent::takeChildFromDOM($child);
+            break;
+        }
     }
+
 
     /**
      * Sets the array of embedded feeds related to the video
@@ -108,24 +120,13 @@ class Zend_Gdata_YouTube_PlaylistVideoEntry extends Zend_Gdata_YouTube_VideoEntr
     }
 
     /**
-     * Creates individual Entry objects of the appropriate type and
-     * stores them in the $_entry array based upon DOM data.
+     * Returns the position of the entry in the feed, as specified by the user
      *
-     * @param DOMNode $child The DOMNode to process
+     * @return Zend_Gdata_YouTube_Extension_Position The position
      */
-    protected function takeChildFromDOM($child)
+    public function getPosition()
     {
-        $absoluteNodeName = $child->namespaceURI . ':' . $child->localName;
-        switch ($absoluteNodeName) {
-            case $this->lookupNamespace('yt') . ':' . 'position':
-                $position = new Zend_Gdata_YouTube_Extension_Position();
-                $position->transferFromDOM($child);
-                $this->_position = $position;
-                break;
-            default:
-                parent::takeChildFromDOM($child);
-                break;
-        }
+        return $this->_position;
     }
 
 }

@@ -16,7 +16,7 @@
  * @category   Zend
  * @package    Zend_Gdata
  * @subpackage Media
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  * @version    $Id$
  */
@@ -32,7 +32,7 @@ require_once 'Zend/Gdata/App/Extension.php';
  * @category   Zend
  * @package    Zend_Gdata
  * @subpackage Media
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Gdata_Media_Extension_MediaThumbnail extends Zend_Gdata_Extension
@@ -70,14 +70,14 @@ class Zend_Gdata_Media_Extension_MediaThumbnail extends Zend_Gdata_Extension
      * @param string $time
      */
     public function __construct($url = null, $width = null, $height = null,
-                                $time = null)
+            $time = null)
     {
         $this->registerAllNamespaces(Zend_Gdata_Media::$namespaces);
         parent::__construct();
         $this->_url = $url;
         $this->_width = $width;
         $this->_height = $height;
-        $this->_time = $time;
+        $this->_time = $time ;
     }
 
     /**
@@ -106,6 +106,33 @@ class Zend_Gdata_Media_Extension_MediaThumbnail extends Zend_Gdata_Extension
             $element->setAttribute('time', $this->_time);
         }
         return $element;
+    }
+
+    /**
+     * Given a DOMNode representing an attribute, tries to map the data into
+     * instance members.  If no mapping is defined, the name and value are
+     * stored in an array.
+     *
+     * @param DOMNode $attribute The DOMNode attribute needed to be handled
+     */
+    protected function takeAttributeFromDOM($attribute)
+    {
+        switch ($attribute->localName) {
+        case 'url':
+            $this->_url = $attribute->nodeValue;
+            break;
+        case 'width':
+            $this->_width = $attribute->nodeValue;
+            break;
+        case 'height':
+            $this->_height = $attribute->nodeValue;
+            break;
+        case 'time':
+            $this->_time = $attribute->nodeValue;
+            break;
+        default:
+            parent::takeAttributeFromDOM($attribute);
+        }
     }
 
     /**
@@ -178,33 +205,6 @@ class Zend_Gdata_Media_Extension_MediaThumbnail extends Zend_Gdata_Extension
     {
         $this->_time = $value;
         return $this;
-    }
-
-    /**
-     * Given a DOMNode representing an attribute, tries to map the data into
-     * instance members.  If no mapping is defined, the name and value are
-     * stored in an array.
-     *
-     * @param DOMNode $attribute The DOMNode attribute needed to be handled
-     */
-    protected function takeAttributeFromDOM($attribute)
-    {
-        switch ($attribute->localName) {
-            case 'url':
-                $this->_url = $attribute->nodeValue;
-                break;
-            case 'width':
-                $this->_width = $attribute->nodeValue;
-                break;
-            case 'height':
-                $this->_height = $attribute->nodeValue;
-                break;
-            case 'time':
-                $this->_time = $attribute->nodeValue;
-                break;
-            default:
-                parent::takeAttributeFromDOM($attribute);
-        }
     }
 
 }

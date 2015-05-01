@@ -15,7 +15,7 @@
  * @category   Zend
  * @package    Zend_Gdata
  * @subpackage Analytics
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  * @version    $Id$
  */
@@ -38,7 +38,7 @@ class Zend_Gdata_Analytics_AccountQuery extends Zend_Gdata_Query
      * The default URI used for feeds.
      */
     protected $_defaultFeedUri = self::ANALYTICS_FEED_URI;
-
+    
     /**
      * @var string
      */
@@ -51,10 +51,10 @@ class Zend_Gdata_Analytics_AccountQuery extends Zend_Gdata_Query
      * @var string
      */
     protected $_profileId = '~all';
-
+   
     /**
      * @var bool
-     */
+     */ 
     protected $_webproperties = false;
     /**
      * @var bool
@@ -64,15 +64,7 @@ class Zend_Gdata_Analytics_AccountQuery extends Zend_Gdata_Query
      * @var bool
      */
     protected $_goals = false;
-
-    /**
-     * @return string
-     */
-    public function getAccountId()
-    {
-        return $this->_accountId;
-    }
-
+    
     /**
      * @param string $accountId
      * @return Zend_Gdata_Analytics_AccountQuery
@@ -82,13 +74,13 @@ class Zend_Gdata_Analytics_AccountQuery extends Zend_Gdata_Query
         $this->_accountId = $accountId;
         return $this;
     }
-
+    
     /**
      * @return string
      */
-    public function getWebpropertyId()
+    public function getAccountId()
     {
-        return $this->_webpropertyId;
+        return $this->_accountId;
     }
 
     /**
@@ -100,15 +92,15 @@ class Zend_Gdata_Analytics_AccountQuery extends Zend_Gdata_Query
         $this->_webpropertyId = $webpropertyId;
         return $this;
     }
-
+    
     /**
      * @return string
      */
-    public function getProfileId()
+    public function getWebpropertyId()
     {
-        return $this->_profileId;
+        return $this->_webpropertyId;
     }
-
+    
     /**
      * @param string $profileId
      * @return Zend_Gdata_Analytics_AccountQuery
@@ -120,16 +112,24 @@ class Zend_Gdata_Analytics_AccountQuery extends Zend_Gdata_Query
     }
 
     /**
+     * @return string
+     */
+    public function getProfileId()
+    {
+        return $this->_profileId;
+    }
+    
+    /**
      * @param string $accountId
      * @return Zend_Gdata_Analytics_AccountQuery
      */
     public function webproperties($accountId = '~all')
     {
         $this->_webproperties = true;
-        $this->setAccountId($accountId);
+        $this->setAccountId($accountId);    
         return $this;
     }
-
+    
     /**
      * @param string $webpropertyId
      * @param string $accountId
@@ -139,12 +139,12 @@ class Zend_Gdata_Analytics_AccountQuery extends Zend_Gdata_Query
     {
         $this->_profiles = true;
         if (null !== $accountId) {
-            $this->setAccountId($accountId);
+            $this->setAccountId($accountId);    
         }
         $this->setWebpropertyId($webpropertyId);
         return $this;
     }
-
+    
     /**
      * @param string $webpropertyId
      * @param string $accountId
@@ -155,31 +155,31 @@ class Zend_Gdata_Analytics_AccountQuery extends Zend_Gdata_Query
     {
         $this->_goals = true;
         if (null !== $accountId) {
-            $this->setAccountId($accountId);
+            $this->setAccountId($accountId);    
         }
         if (null !== $webpropertyId) {
-            $this->setWebpropertyId($webpropertyId);
+            $this->setWebpropertyId($webpropertyId);    
         }
         $this->setProfileId($profileId);
         return $this;
     }
-
+    
     /**
      * @return string url
      */
     public function getQueryUrl()
     {
         $url = $this->_defaultFeedUri;
-
+        
         // add account id
         if ($this->_webproperties or $this->_profiles or $this->_goals) {
             $url .= '/' . $this->_accountId . '/webproperties';
         }
-
+        
         if ($this->_profiles or $this->_goals) {
             $url .= '/' . $this->_webpropertyId . '/profiles';
         }
-
+        
         if ($this->_goals) {
             $url .= '/' . $this->_profileId . '/goals';
         }

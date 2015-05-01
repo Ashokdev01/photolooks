@@ -16,7 +16,7 @@
  * @category   Zend
  * @package    Zend_Gdata
  * @subpackage Gdata
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  * @version    $Id$
  */
@@ -37,7 +37,7 @@ require_once 'Zend/Gdata/Entry.php';
  * @category   Zend
  * @package    Zend_Gdata
  * @subpackage Gdata
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Gdata_Extension_EntryLink extends Zend_Gdata_Extension
@@ -50,7 +50,7 @@ class Zend_Gdata_Extension_EntryLink extends Zend_Gdata_Extension
     protected $_entry = null;
 
     public function __construct($href = null, $rel = null,
-                                $readOnly = null, $entry = null)
+            $readOnly = null, $entry = null)
     {
         parent::__construct();
         $this->_href = $href;
@@ -75,6 +75,46 @@ class Zend_Gdata_Extension_EntryLink extends Zend_Gdata_Extension
             $element->appendChild($this->_entry->getDOM($element->ownerDocument));
         }
         return $element;
+    }
+
+    protected function takeChildFromDOM($child)
+    {
+        $absoluteNodeName = $child->namespaceURI . ':' . $child->localName;
+        switch ($absoluteNodeName) {
+            case $this->lookupNamespace('atom') . ':' . 'entry';
+                $entry = new Zend_Gdata_Entry();
+                $entry->transferFromDOM($child);
+                $this->_entry = $entry;
+                break;
+        default:
+            parent::takeChildFromDOM($child);
+            break;
+        }
+    }
+
+    protected function takeAttributeFromDOM($attribute)
+    {
+        switch ($attribute->localName) {
+        case 'href':
+            $this->_href = $attribute->nodeValue;
+            break;
+        case 'readOnly':
+            if ($attribute->nodeValue == "true") {
+                $this->_readOnly = true;
+            }
+            else if ($attribute->nodeValue == "false") {
+                $this->_readOnly = false;
+            }
+            else {
+                throw new Zend_Gdata_App_InvalidArgumentException("Expected 'true' or 'false' for gCal:selected#value.");
+            }
+            break;
+        case 'rel':
+            $this->_rel = $attribute->nodeValue;
+            break;
+        default:
+            parent::takeAttributeFromDOM($attribute);
+        }
     }
 
     /**
@@ -122,44 +162,6 @@ class Zend_Gdata_Extension_EntryLink extends Zend_Gdata_Extension
     {
         $this->_entry = $value;
         return $this;
-    }
-
-    protected function takeChildFromDOM($child)
-    {
-        $absoluteNodeName = $child->namespaceURI . ':' . $child->localName;
-        switch ($absoluteNodeName) {
-            case $this->lookupNamespace('atom') . ':' . 'entry';
-                $entry = new Zend_Gdata_Entry();
-                $entry->transferFromDOM($child);
-                $this->_entry = $entry;
-                break;
-            default:
-                parent::takeChildFromDOM($child);
-                break;
-        }
-    }
-
-    protected function takeAttributeFromDOM($attribute)
-    {
-        switch ($attribute->localName) {
-            case 'href':
-                $this->_href = $attribute->nodeValue;
-                break;
-            case 'readOnly':
-                if ($attribute->nodeValue == "true") {
-                    $this->_readOnly = true;
-                } else if ($attribute->nodeValue == "false") {
-                    $this->_readOnly = false;
-                } else {
-                    throw new Zend_Gdata_App_InvalidArgumentException("Expected 'true' or 'false' for gCal:selected#value.");
-                }
-                break;
-            case 'rel':
-                $this->_rel = $attribute->nodeValue;
-                break;
-            default:
-                parent::takeAttributeFromDOM($attribute);
-        }
     }
 
 }

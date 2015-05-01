@@ -16,7 +16,7 @@
  * @category   Zend
  * @package    Zend_Gdata
  * @subpackage YouTube
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  * @version    $Id$
  */
@@ -35,7 +35,7 @@ require_once 'Zend/Gdata/Media/Extension/MediaContent.php';
  * @category   Zend
  * @package    Zend_Gdata
  * @subpackage YouTube
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Gdata_YouTube_Extension_MediaContent extends Zend_Gdata_Media_Extension_MediaContent
@@ -52,8 +52,7 @@ class Zend_Gdata_YouTube_Extension_MediaContent extends Zend_Gdata_Media_Extensi
     protected $_format = null;
 
 
-    function __construct()
-    {
+    function __construct() {
         $this->registerAllNamespaces(Zend_Gdata_YouTube::$namespaces);
         parent::__construct();
     }
@@ -71,34 +70,10 @@ class Zend_Gdata_YouTube_Extension_MediaContent extends Zend_Gdata_Media_Extensi
     public function getDOM($doc = null, $majorVersion = 1, $minorVersion = null)
     {
         $element = parent::getDOM($doc, $majorVersion, $minorVersion);
-        if ($this->_format != null) {
+        if ($this->_format!= null) {
             $element->setAttributeNS($this->lookupNamespace('yt'), 'yt:format', $this->_format);
         }
         return $element;
-    }
-
-    /**
-     * Returns the format of the media
-     * Optional.
-     *
-     * @return int  The format of the media
-     */
-    public function getFormat()
-    {
-        return $this->_format;
-    }
-
-    /**
-     * Sets the format of the media
-     *
-     * @param int $value Format of the media
-     * @return Zend_Gdata_YouTube_Extension_MediaContent  Provides a fluent interface
-     *
-     */
-    public function setFormat($value)
-    {
-        $this->_format = $value;
-        return $this;
     }
 
     /**
@@ -116,6 +91,30 @@ class Zend_Gdata_YouTube_Extension_MediaContent extends Zend_Gdata_Media_Extensi
         } else {
             parent::takeAttributeFromDOM($attribute);
         }
+    }
+
+    /**
+     * Returns the format of the media
+     * Optional.
+     *
+     * @return int  The format of the media
+     */
+    public function getFormat()
+    {
+        return $this->_format;
+    }
+
+    /**
+     * Sets the format of the media
+     *
+     * @param int $value    Format of the media
+     * @return Zend_Gdata_YouTube_Extension_MediaContent  Provides a fluent interface
+     *
+     */
+    public function setFormat($value)
+    {
+        $this->_format = $value;
+        return $this;
     }
 
 }

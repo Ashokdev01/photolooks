@@ -15,7 +15,7 @@
  * @category   Zend
  * @package    Zend_Gdata
  * @subpackage Analytics
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  * @version    $Id$
  */
@@ -30,7 +30,7 @@ require_once 'Zend/Gdata/Analytics/Extension/Metric.php';
  * @package    Zend_Gdata
  * @subpackage Analytics
  */
-class Zend_Gdata_Analytics_Extension_Dimension
+class Zend_Gdata_Analytics_Extension_Dimension 
     extends Zend_Gdata_Analytics_Extension_Metric
 {
     protected $_rootNamespace = 'ga';

@@ -16,7 +16,7 @@
  * @category   Zend
  * @package    Zend_Gdata
  * @subpackage Calendar
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  * @version    $Id$
  */
@@ -32,7 +32,7 @@ require_once 'Zend/Gdata/Extension.php';
  * @category   Zend
  * @package    Zend_Gdata
  * @subpackage Calendar
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Gdata_Calendar_Extension_WebContent extends Zend_Gdata_App_Extension
@@ -82,6 +82,30 @@ class Zend_Gdata_Calendar_Extension_WebContent extends Zend_Gdata_App_Extension
             $element->setAttribute('width', $this->_width);
         }
         return $element;
+    }
+
+    /**
+     * Given a DOMNode representing an attribute, tries to map the data into
+     * instance members.  If no mapping is defined, the name and value are
+     * stored in an array.
+     *
+     * @param DOMNode $attribute The DOMNode attribute needed to be handled
+     */
+    protected function takeAttributeFromDOM($attribute)
+    {
+        switch ($attribute->localName) {
+                case 'url':
+                        $this->_url = $attribute->nodeValue;
+                        break;
+                case 'height':
+                        $this->_height = $attribute->nodeValue;
+                        break;
+                case 'width':
+                        $this->_width = $attribute->nodeValue;
+                        break;
+        default:
+            parent::takeAttributeFromDOM($attribute);
+        }
     }
 
     /**
@@ -148,30 +172,6 @@ class Zend_Gdata_Calendar_Extension_WebContent extends Zend_Gdata_App_Extension
     {
         $this->_width = $value;
         return $this;
-    }
-
-    /**
-     * Given a DOMNode representing an attribute, tries to map the data into
-     * instance members.  If no mapping is defined, the name and value are
-     * stored in an array.
-     *
-     * @param DOMNode $attribute The DOMNode attribute needed to be handled
-     */
-    protected function takeAttributeFromDOM($attribute)
-    {
-        switch ($attribute->localName) {
-            case 'url':
-                $this->_url = $attribute->nodeValue;
-                break;
-            case 'height':
-                $this->_height = $attribute->nodeValue;
-                break;
-            case 'width':
-                $this->_width = $attribute->nodeValue;
-                break;
-            default:
-                parent::takeAttributeFromDOM($attribute);
-        }
     }
 
 }

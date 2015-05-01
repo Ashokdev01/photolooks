@@ -16,7 +16,7 @@
  * @category   Zend
  * @package    Zend_Gdata
  * @subpackage Gapps
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  * @version    $Id:$
  */
@@ -37,7 +37,7 @@ require_once('Zend/Gdata/Gapps/Query.php');
  * @category   Zend
  * @package    Zend_Gdata
  * @subpackage Gapps
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Gdata_Gapps_GroupQuery extends Zend_Gdata_Gapps_Query
@@ -61,39 +61,11 @@ class Zend_Gdata_Gapps_GroupQuery extends Zend_Gdata_Gapps_Query
      *          startGroupName property.
      */
     public function __construct($domain = null, $groupId = null,
-                                $startGroupId = null)
+            $startGroupId = null)
     {
         parent::__construct($domain);
         $this->setGroupId($groupId);
         $this->setStartGroupId($startGroupId);
-    }
-
-    /**
-     * Set the first group id which should be displayed when retrieving
-     * a list of groups.
-     *
-     * @param string $value The first group id to be returned, or null to
-     *          disable.
-     */
-    public function setStartGroupId($value)
-    {
-        if ($value !== null) {
-            $this->_params['start'] = $value;
-        } else {
-            unset($this->_params['start']);
-        }
-    }
-
-    /**
-     * Get the group id to query for. If no group id is set, null will be
-     * returned.
-     *
-     * @param string $value The group id to filter search results by, or
-     *          null if disabled.
-     */
-    public function getGroupId()
-    {
-        return $this->_groupId;
     }
 
     /**
@@ -111,6 +83,18 @@ class Zend_Gdata_Gapps_GroupQuery extends Zend_Gdata_Gapps_Query
     }
 
     /**
+     * Get the group id to query for. If no group id is set, null will be
+     * returned.
+     *
+     * @param string $value The group id to filter search results by, or
+     *          null if disabled.
+     */
+    public function getGroupId()
+    {
+        return $this->_groupId;
+    }
+
+    /**
      * Set the member to query for. When set, only subscribers with an
      * email address matching this value will be returned in search results.
      * Set to null to disable filtering by username.
@@ -122,7 +106,8 @@ class Zend_Gdata_Gapps_GroupQuery extends Zend_Gdata_Gapps_Query
     {
         if ($value !== null) {
             $this->_params['member'] = $value;
-        } else {
+        }
+        else {
             unset($this->_params['member']);
         }
     }
@@ -144,6 +129,7 @@ class Zend_Gdata_Gapps_GroupQuery extends Zend_Gdata_Gapps_Query
         }
     }
 
+
     /**
      * Sets the query parameter directOnly
      * @param bool $value
@@ -151,7 +137,7 @@ class Zend_Gdata_Gapps_GroupQuery extends Zend_Gdata_Gapps_Query
     public function setDirectOnly($value)
     {
         if ($value !== null) {
-            if ($value == true) {
+            if($value == true) {
                 $this->_params['directOnly'] = 'true';
             } else {
                 $this->_params['directOnly'] = 'false';
@@ -170,13 +156,29 @@ class Zend_Gdata_Gapps_GroupQuery extends Zend_Gdata_Gapps_Query
     {
         if (array_key_exists('directOnly', $this->_params)) {
 
-            if ($this->_params['directOnly'] == 'true') {
+            if($this->_params['directOnly'] == 'true') {
                 return true;
             } else {
                 return false;
             }
         } else {
             return null;
+        }
+    }
+
+    /**
+     * Set the first group id which should be displayed when retrieving
+     * a list of groups.
+     *
+     * @param string $value The first group id to be returned, or null to
+     *          disable.
+     */
+    public function setStartGroupId($value)
+    {
+        if ($value !== null) {
+            $this->_params['start'] = $value;
+        } else {
+            unset($this->_params['start']);
         }
     }
 
@@ -205,7 +207,7 @@ class Zend_Gdata_Gapps_GroupQuery extends Zend_Gdata_Gapps_Query
     public function getQueryUrl()
     {
 
-        $uri = Zend_Gdata_Gapps::APPS_BASE_FEED_URI;
+        $uri  = Zend_Gdata_Gapps::APPS_BASE_FEED_URI;
         $uri .= Zend_Gdata_Gapps::APPS_GROUP_PATH;
         $uri .= '/' . $this->_domain;
 
@@ -213,7 +215,7 @@ class Zend_Gdata_Gapps_GroupQuery extends Zend_Gdata_Gapps_Query
             $uri .= '/' . $this->_groupId;
         }
 
-        if (array_key_exists('member', $this->_params)) {
+        if(array_key_exists('member', $this->_params)) {
             $uri .= '/';
         }
 

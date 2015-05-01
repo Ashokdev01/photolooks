@@ -16,7 +16,7 @@
  * @category   Zend
  * @package    Zend_Gdata
  * @subpackage Calendar
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  * @version    $Id$
  */
@@ -37,7 +37,7 @@ require_once 'Zend/Gdata/Calendar/Extension/Timezone.php';
  * @category   Zend
  * @package    Zend_Gdata
  * @subpackage Calendar
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Gdata_Calendar_EventFeed extends Zend_Gdata_Feed
@@ -75,17 +75,6 @@ class Zend_Gdata_Calendar_EventFeed extends Zend_Gdata_Feed
         return $element;
     }
 
-    public function getTimezone()
-    {
-        return $this->_timezone;
-    }
-
-    public function setTimezone($value)
-    {
-        $this->_timezone = $value;
-        return $this;
-    }
-
     protected function takeChildFromDOM($child)
     {
         $absoluteNodeName = $child->namespaceURI . ':' . $child->localName;
@@ -101,6 +90,17 @@ class Zend_Gdata_Calendar_EventFeed extends Zend_Gdata_Feed
                 parent::takeChildFromDOM($child);
                 break;
         }
+    }
+
+    public function getTimezone()
+    {
+        return $this->_timezone;
+    }
+
+    public function setTimezone($value)
+    {
+        $this->_timezone = $value;
+        return $this;
     }
 
 }

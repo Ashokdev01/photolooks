@@ -16,7 +16,7 @@
  * @category   Zend
  * @package    Zend_Gdata
  * @subpackage App
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  * @version    $Id$
  */
@@ -33,14 +33,13 @@ require_once 'Zend/Gdata/App/Extension.php';
  * @category   Zend
  * @package    Zend_Gdata
  * @subpackage App
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Gdata_App_Extension_Element extends Zend_Gdata_App_Extension
 {
 
-    public function __construct($rootElement = null, $rootNamespace = null, $rootNamespaceURI = null, $text = null)
-    {
+    public function __construct($rootElement=null, $rootNamespace=null, $rootNamespaceURI=null, $text=null){
         parent::__construct();
         $this->_rootElement = $rootElement;
         $this->_rootNamespace = $rootNamespace;

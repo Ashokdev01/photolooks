@@ -16,7 +16,7 @@
  * @category   Zend
  * @package    Zend_Gdata
  * @subpackage Media
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  * @version    $Id$
  */
@@ -35,7 +35,7 @@ require_once 'Zend/Gdata/Extension.php';
  * @category   Zend
  * @package    Zend_Gdata
  * @subpackage Media
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Gdata_Media_Extension_MediaContent extends Zend_Gdata_Extension
@@ -117,10 +117,10 @@ class Zend_Gdata_Media_Extension_MediaContent extends Zend_Gdata_Extension
      * Creates an individual MediaContent object.
      */
     public function __construct($url = null, $fileSize = null, $type = null,
-                                $medium = null, $isDefault = null, $expression = null,
-                                $bitrate = null, $framerate = null, $samplingrate = null,
-                                $channels = null, $duration = null, $height = null, $width = null,
-                                $lang = null)
+            $medium = null, $isDefault = null, $expression = null,
+            $bitrate = null, $framerate = null, $samplingrate = null,
+            $channels = null, $duration = null, $height = null, $width = null,
+            $lang = null)
     {
         $this->registerAllNamespaces(Zend_Gdata_Media::$namespaces);
         parent::__construct();
@@ -200,6 +200,63 @@ class Zend_Gdata_Media_Extension_MediaContent extends Zend_Gdata_Extension
     }
 
     /**
+     * Given a DOMNode representing an attribute, tries to map the data into
+     * instance members.  If no mapping is defined, the name and value are
+     * stored in an array.
+     *
+     * @param DOMNode $attribute The DOMNode attribute needed to be handled
+     */
+    protected function takeAttributeFromDOM($attribute)
+    {
+        switch ($attribute->localName) {
+            case 'url':
+                $this->_url = $attribute->nodeValue;
+                break;
+            case 'fileSize':
+                $this->_fileSize = $attribute->nodeValue;
+                break;
+            case 'type':
+                $this->_type = $attribute->nodeValue;
+                break;
+            case 'medium':
+                $this->_medium = $attribute->nodeValue;
+                break;
+            case 'isDefault':
+                $this->_isDefault = $attribute->nodeValue;
+                break;
+            case 'expression':
+                $this->_expression = $attribute->nodeValue;
+                break;
+            case 'bitrate':
+                $this->_bitrate = $attribute->nodeValue;
+                break;
+            case 'framerate':
+                $this->_framerate = $attribute->nodeValue;
+                break;
+            case 'samplingrate':
+                $this->_samplingrate = $attribute->nodeValue;
+                break;
+            case 'channels':
+                $this->_channels = $attribute->nodeValue;
+                break;
+            case 'duration':
+                $this->_duration = $attribute->nodeValue;
+                break;
+            case 'height':
+                $this->_height = $attribute->nodeValue;
+                break;
+            case 'width':
+                $this->_width = $attribute->nodeValue;
+                break;
+            case 'lang':
+                $this->_lang = $attribute->nodeValue;
+                break;
+            default:
+                parent::takeAttributeFromDOM($attribute);
+        }
+    }
+
+    /**
      * Returns the URL representing this MediaContent object
      *
      * @return string   The URL representing this MediaContent object.
@@ -218,7 +275,7 @@ class Zend_Gdata_Media_Extension_MediaContent extends Zend_Gdata_Extension
     }
 
     /**
-     * @param string $value The direct URL to the media object
+     * @param string $value     The direct URL to the media object
      * @return Zend_Gdata_Media_Extension_MediaContent  Provides a fluent interface
      */
     public function setUrl($value)
@@ -460,63 +517,6 @@ class Zend_Gdata_Media_Extension_MediaContent extends Zend_Gdata_Extension
     {
         $this->_lang = $value;
         return $this;
-    }
-
-    /**
-     * Given a DOMNode representing an attribute, tries to map the data into
-     * instance members.  If no mapping is defined, the name and value are
-     * stored in an array.
-     *
-     * @param DOMNode $attribute The DOMNode attribute needed to be handled
-     */
-    protected function takeAttributeFromDOM($attribute)
-    {
-        switch ($attribute->localName) {
-            case 'url':
-                $this->_url = $attribute->nodeValue;
-                break;
-            case 'fileSize':
-                $this->_fileSize = $attribute->nodeValue;
-                break;
-            case 'type':
-                $this->_type = $attribute->nodeValue;
-                break;
-            case 'medium':
-                $this->_medium = $attribute->nodeValue;
-                break;
-            case 'isDefault':
-                $this->_isDefault = $attribute->nodeValue;
-                break;
-            case 'expression':
-                $this->_expression = $attribute->nodeValue;
-                break;
-            case 'bitrate':
-                $this->_bitrate = $attribute->nodeValue;
-                break;
-            case 'framerate':
-                $this->_framerate = $attribute->nodeValue;
-                break;
-            case 'samplingrate':
-                $this->_samplingrate = $attribute->nodeValue;
-                break;
-            case 'channels':
-                $this->_channels = $attribute->nodeValue;
-                break;
-            case 'duration':
-                $this->_duration = $attribute->nodeValue;
-                break;
-            case 'height':
-                $this->_height = $attribute->nodeValue;
-                break;
-            case 'width':
-                $this->_width = $attribute->nodeValue;
-                break;
-            case 'lang':
-                $this->_lang = $attribute->nodeValue;
-                break;
-            default:
-                parent::takeAttributeFromDOM($attribute);
-        }
     }
 
 }

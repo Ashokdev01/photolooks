@@ -16,7 +16,7 @@
  * @category   Zend
  * @package    Zend_Gdata
  * @subpackage Books
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  * @version    $Id$
  */
@@ -32,18 +32,11 @@ require_once 'Zend/Gdata/Feed.php';
  * @category   Zend
  * @package    Zend_Gdata
  * @subpackage Books
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Gdata_Books_VolumeFeed extends Zend_Gdata_Feed
 {
-
-    /**
-     * The classname for individual feed elements.
-     *
-     * @var string
-     */
-    protected $_entryClassName = 'Zend_Gdata_Books_VolumeEntry';
 
     /**
      * Constructor for Zend_Gdata_Books_VolumeFeed which
@@ -57,6 +50,13 @@ class Zend_Gdata_Books_VolumeFeed extends Zend_Gdata_Feed
         $this->registerAllNamespaces(Zend_Gdata_Books::$namespaces);
         parent::__construct($element);
     }
+
+     /**
+      * The classname for individual feed elements.
+      *
+      * @var string
+      */
+     protected $_entryClassName = 'Zend_Gdata_Books_VolumeEntry';
 
 }
 

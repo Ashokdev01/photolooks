@@ -16,7 +16,7 @@
  * @category   Zend
  * @package    Zend_Gdata
  * @subpackage Photos
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  * @version    $Id$
  */
@@ -37,7 +37,7 @@ require_once('Zend/Gdata/Photos/AlbumQuery.php');
  * @category   Zend
  * @package    Zend_Gdata
  * @subpackage Photos
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Gdata_Photos_PhotoQuery extends Zend_Gdata_Photos_AlbumQuery
@@ -49,6 +49,30 @@ class Zend_Gdata_Photos_PhotoQuery extends Zend_Gdata_Photos_AlbumQuery
      * @var string
      */
     protected $_photoId = null;
+
+    /**
+     * Set the photo ID to query for. When set, this photo's comments/tags
+     * will be returned. If not set or null, the default user's feed will be
+     * returned instead.
+     *
+     * @param string $value The ID of the photo to retrieve, or null to
+     *          clear.
+     */
+     public function setPhotoId($value)
+     {
+         $this->_photoId = $value;
+     }
+
+    /**
+     * Get the photo ID which is to be returned.
+     *
+     * @see setPhoto
+     * @return string The ID of the photo to retrieve.
+     */
+    public function getPhotoId()
+    {
+        return $this->_photoId;
+    }
 
     /**
      * Returns the URL generated for this query, based on it's current
@@ -65,34 +89,10 @@ class Zend_Gdata_Photos_PhotoQuery extends Zend_Gdata_Photos_AlbumQuery
         } else {
             require_once 'Zend/Gdata/App/InvalidArgumentException.php';
             throw new Zend_Gdata_App_InvalidArgumentException(
-                'PhotoId cannot be null');
+                    'PhotoId cannot be null');
         }
         $uri .= $incomingUri;
         return parent::getQueryUrl($uri);
-    }
-
-    /**
-     * Get the photo ID which is to be returned.
-     *
-     * @see setPhoto
-     * @return string The ID of the photo to retrieve.
-     */
-    public function getPhotoId()
-    {
-        return $this->_photoId;
-    }
-
-    /**
-     * Set the photo ID to query for. When set, this photo's comments/tags
-     * will be returned. If not set or null, the default user's feed will be
-     * returned instead.
-     *
-     * @param string $value The ID of the photo to retrieve, or null to
-     *          clear.
-     */
-    public function setPhotoId($value)
-    {
-        $this->_photoId = $value;
     }
 
 }

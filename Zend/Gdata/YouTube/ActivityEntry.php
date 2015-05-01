@@ -16,7 +16,7 @@
  * @category   Zend
  * @package    Zend_Gdata
  * @subpackage Health
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  * @version    $Id$
  */
@@ -49,7 +49,7 @@ require_once 'Zend/Gdata/Extension/Rating.php';
  * @category   Zend
  * @package    Zend_Gdata
  * @subpackage YouTube
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Gdata_YouTube_ActivityEntry extends Zend_Gdata_Entry
@@ -109,18 +109,49 @@ class Zend_Gdata_YouTube_ActivityEntry extends Zend_Gdata_Entry
     {
         $element = parent::getDOM($doc, $majorVersion, $minorVersion);
         if ($this->_videoId !== null) {
-            $element->appendChild($this->_videoId->getDOM(
-                $element->ownerDocument));
+          $element->appendChild($this->_videoId->getDOM(
+              $element->ownerDocument));
         }
         if ($this->_username !== null) {
-            $element->appendChild($this->_username->getDOM(
-                $element->ownerDocument));
+          $element->appendChild($this->_username->getDOM(
+              $element->ownerDocument));
         }
         if ($this->_rating !== null) {
-            $element->appendChild($this->_rating->getDOM(
-                $element->ownerDocument));
+          $element->appendChild($this->_rating->getDOM(
+              $element->ownerDocument));
         }
         return $element;
+    }
+
+    /**
+     * Creates individual Entry objects of the appropriate type and
+     * stores them as members of this entry based upon DOM data.
+     *
+     * @param DOMNode $child The DOMNode to process
+     */
+    protected function takeChildFromDOM($child)
+    {
+        $absoluteNodeName = $child->namespaceURI . ':' . $child->localName;
+        switch ($absoluteNodeName) {
+            case $this->lookupNamespace('yt') . ':' . 'videoid':
+                $videoId = new Zend_Gdata_YouTube_Extension_VideoId();
+                $videoId->transferFromDOM($child);
+                $this->_videoId = $videoId;
+                break;
+            case $this->lookupNamespace('yt') . ':' . 'username':
+                $username = new Zend_Gdata_YouTube_Extension_Username();
+                $username->transferFromDOM($child);
+                $this->_username = $username;
+                break;
+            case $this->lookupNamespace('gd') . ':' . 'rating':
+                $rating = new Zend_Gdata_Extension_Rating();
+                $rating->transferFromDOM($child);
+                $this->_rating = $rating;
+                break;
+            default:
+                parent::takeChildFromDOM($child);
+                break;
+        }
     }
 
     /**
@@ -180,7 +211,7 @@ class Zend_Gdata_YouTube_ActivityEntry extends Zend_Gdata_Entry
     public function getActivityType()
     {
         $categories = $this->getCategory();
-        foreach ($categories as $category) {
+        foreach($categories as $category) {
             if ($category->getScheme() == self::ACTIVITY_CATEGORY_SCHEME) {
                 return $category->getTerm();
             }
@@ -197,36 +228,5 @@ class Zend_Gdata_YouTube_ActivityEntry extends Zend_Gdata_Entry
     {
         $authors = $this->getAuthor();
         return $authors[0]->getName()->getText();
-    }
-
-    /**
-     * Creates individual Entry objects of the appropriate type and
-     * stores them as members of this entry based upon DOM data.
-     *
-     * @param DOMNode $child The DOMNode to process
-     */
-    protected function takeChildFromDOM($child)
-    {
-        $absoluteNodeName = $child->namespaceURI . ':' . $child->localName;
-        switch ($absoluteNodeName) {
-            case $this->lookupNamespace('yt') . ':' . 'videoid':
-                $videoId = new Zend_Gdata_YouTube_Extension_VideoId();
-                $videoId->transferFromDOM($child);
-                $this->_videoId = $videoId;
-                break;
-            case $this->lookupNamespace('yt') . ':' . 'username':
-                $username = new Zend_Gdata_YouTube_Extension_Username();
-                $username->transferFromDOM($child);
-                $this->_username = $username;
-                break;
-            case $this->lookupNamespace('gd') . ':' . 'rating':
-                $rating = new Zend_Gdata_Extension_Rating();
-                $rating->transferFromDOM($child);
-                $this->_rating = $rating;
-                break;
-            default:
-                parent::takeChildFromDOM($child);
-                break;
-        }
     }
 }

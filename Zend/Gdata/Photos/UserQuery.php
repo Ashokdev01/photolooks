@@ -16,7 +16,7 @@
  * @category   Zend
  * @package    Zend_Gdata
  * @subpackage Photos
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  * @version    $Id$
  */
@@ -37,7 +37,7 @@ require_once('Zend/Gdata/Gapps/Query.php');
  * @category   Zend
  * @package    Zend_Gdata
  * @subpackage Photos
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Gdata_Photos_UserQuery extends Zend_Gdata_Query
@@ -77,6 +77,82 @@ class Zend_Gdata_Photos_UserQuery extends Zend_Gdata_Query
     }
 
     /**
+     * Set's the format of data returned in Atom feeds. Can be either
+     * 'api' or 'base'. Normally, 'api' will be desired. Default is 'api'.
+     *
+     * @param string $value
+     * @return Zend_Gdata_Photos_UserQuery Provides a fluent interface
+     */
+    public function setProjection($value)
+    {
+        $this->_projection = $value;
+        return $this;
+    }
+
+    /**
+     * Gets the format of data in returned in Atom feeds.
+     *
+     * @see setProjection
+     * @return string projection
+     */
+    public function getProjection()
+    {
+        return $this->_projection;
+    }
+
+    /**
+     * Set's the type of data returned in queries. Can be either
+     * 'feed' or 'entry'. Normally, 'feed' will be desired. Default is 'feed'.
+     *
+     * @param string $value
+     * @return Zend_Gdata_Photos_UserQuery Provides a fluent interface
+     */
+    public function setType($value)
+    {
+        $this->_type = $value;
+        return $this;
+    }
+
+    /**
+     * Gets the type of data in returned in queries.
+     *
+     * @see setType
+     * @return string type
+     */
+    public function getType()
+    {
+        return $this->_type;
+    }
+
+    /**
+     * Set the user to query for. When set, this user's feed will be
+     * returned. If not set or null, the default user's feed will be returned
+     * instead.
+     *
+     * @param string $value The user to retrieve, or null for the default
+     *          user.
+     */
+     public function setUser($value)
+     {
+         if ($value !== null) {
+             $this->_user = $value;
+         } else {
+             $this->_user = Zend_Gdata_Photos::DEFAULT_USER;
+         }
+     }
+
+    /**
+     * Get the user which is to be returned.
+     *
+     * @see setUser
+     * @return string The visibility to retrieve.
+     */
+    public function getUser()
+    {
+        return $this->_user;
+    }
+
+    /**
      * Set the visibility filter for entries returned. Only entries which
      * match this value will be returned. If null or unset, the default
      * value will be used instead.
@@ -86,14 +162,14 @@ class Zend_Gdata_Photos_UserQuery extends Zend_Gdata_Query
      * @param string $value The visibility to filter by, or null to use the
      *          default value.
      */
-    public function setAccess($value)
-    {
-        if ($value !== null) {
-            $this->_params['access'] = $value;
-        } else {
-            unset($this->_params['access']);
-        }
-    }
+     public function setAccess($value)
+     {
+         if ($value !== null) {
+             $this->_params['access'] = $value;
+         } else {
+             unset($this->_params['access']);
+         }
+     }
 
     /**
      * Get the visibility filter for entries returned.
@@ -118,14 +194,14 @@ class Zend_Gdata_Photos_UserQuery extends Zend_Gdata_Query
      * @param string $value The tag to filter by, or null if no
      *          filter is to be applied.
      */
-    public function setTag($value)
-    {
-        if ($value !== null) {
-            $this->_params['tag'] = $value;
-        } else {
-            unset($this->_params['tag']);
-        }
-    }
+     public function setTag($value)
+     {
+         if ($value !== null) {
+             $this->_params['tag'] = $value;
+         } else {
+             unset($this->_params['tag']);
+         }
+     }
 
     /**
      * Get the tag filter for entries returned.
@@ -150,14 +226,14 @@ class Zend_Gdata_Photos_UserQuery extends Zend_Gdata_Query
      * @param string $value The kind to filter by, or null if no
      *          filter is to be applied.
      */
-    public function setKind($value)
-    {
-        if ($value !== null) {
-            $this->_params['kind'] = $value;
-        } else {
-            unset($this->_params['kind']);
-        }
-    }
+     public function setKind($value)
+     {
+         if ($value !== null) {
+             $this->_params['kind'] = $value;
+         } else {
+             unset($this->_params['kind']);
+         }
+     }
 
     /**
      * Get the kind of entries to be returned.
@@ -182,14 +258,14 @@ class Zend_Gdata_Photos_UserQuery extends Zend_Gdata_Query
      * @param string $value The image size to filter by, or null if no
      *          filter is to be applied.
      */
-    public function setImgMax($value)
-    {
-        if ($value !== null) {
-            $this->_params['imgmax'] = $value;
-        } else {
-            unset($this->_params['imgmax']);
-        }
-    }
+     public function setImgMax($value)
+     {
+         if ($value !== null) {
+             $this->_params['imgmax'] = $value;
+         } else {
+             unset($this->_params['imgmax']);
+         }
+     }
 
     /**
      * Get the maximum image size filter for entries returned.
@@ -214,14 +290,14 @@ class Zend_Gdata_Photos_UserQuery extends Zend_Gdata_Query
      * @param string $value The thumbnail size to filter by, or null if no
      *          filter is to be applied.
      */
-    public function setThumbsize($value)
-    {
-        if ($value !== null) {
-            $this->_params['thumbsize'] = $value;
-        } else {
-            unset($this->_params['thumbsize']);
-        }
-    }
+     public function setThumbsize($value)
+     {
+         if ($value !== null) {
+             $this->_params['thumbsize'] = $value;
+         } else {
+             unset($this->_params['thumbsize']);
+         }
+     }
 
     /**
      * Get the thumbnail size filter for entries returned.
@@ -251,7 +327,7 @@ class Zend_Gdata_Photos_UserQuery extends Zend_Gdata_Query
         } else {
             require_once 'Zend/Gdata/App/InvalidArgumentException.php';
             throw new Zend_Gdata_App_InvalidArgumentException(
-                'Type must be feed or entry, not null');
+                    'Type must be feed or entry, not null');
         }
 
         if ($this->getProjection() !== null) {
@@ -259,7 +335,7 @@ class Zend_Gdata_Photos_UserQuery extends Zend_Gdata_Query
         } else {
             require_once 'Zend/Gdata/App/InvalidArgumentException.php';
             throw new Zend_Gdata_App_InvalidArgumentException(
-                'Projection must not be null');
+                    'Projection must not be null');
         }
 
         if ($this->getUser() !== null) {
@@ -268,88 +344,12 @@ class Zend_Gdata_Photos_UserQuery extends Zend_Gdata_Query
             // Should never occur due to setter behavior
             require_once 'Zend/Gdata/App/InvalidArgumentException.php';
             throw new Zend_Gdata_App_InvalidArgumentException(
-                'User must not be null');
+                    'User must not be null');
         }
 
         $uri .= $incomingUri;
         $uri .= $this->getQueryString();
         return $uri;
-    }
-
-    /**
-     * Gets the type of data in returned in queries.
-     *
-     * @see setType
-     * @return string type
-     */
-    public function getType()
-    {
-        return $this->_type;
-    }
-
-    /**
-     * Set's the type of data returned in queries. Can be either
-     * 'feed' or 'entry'. Normally, 'feed' will be desired. Default is 'feed'.
-     *
-     * @param string $value
-     * @return Zend_Gdata_Photos_UserQuery Provides a fluent interface
-     */
-    public function setType($value)
-    {
-        $this->_type = $value;
-        return $this;
-    }
-
-    /**
-     * Gets the format of data in returned in Atom feeds.
-     *
-     * @see setProjection
-     * @return string projection
-     */
-    public function getProjection()
-    {
-        return $this->_projection;
-    }
-
-    /**
-     * Set's the format of data returned in Atom feeds. Can be either
-     * 'api' or 'base'. Normally, 'api' will be desired. Default is 'api'.
-     *
-     * @param string $value
-     * @return Zend_Gdata_Photos_UserQuery Provides a fluent interface
-     */
-    public function setProjection($value)
-    {
-        $this->_projection = $value;
-        return $this;
-    }
-
-    /**
-     * Get the user which is to be returned.
-     *
-     * @see setUser
-     * @return string The visibility to retrieve.
-     */
-    public function getUser()
-    {
-        return $this->_user;
-    }
-
-    /**
-     * Set the user to query for. When set, this user's feed will be
-     * returned. If not set or null, the default user's feed will be returned
-     * instead.
-     *
-     * @param string $value The user to retrieve, or null for the default
-     *          user.
-     */
-    public function setUser($value)
-    {
-        if ($value !== null) {
-            $this->_user = $value;
-        } else {
-            $this->_user = Zend_Gdata_Photos::DEFAULT_USER;
-        }
     }
 
 }

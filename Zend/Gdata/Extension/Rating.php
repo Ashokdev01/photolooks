@@ -16,7 +16,7 @@
  * @category   Zend
  * @package    Zend_Gdata
  * @subpackage Gdata
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  * @version    $Id$
  */
@@ -33,7 +33,7 @@ require_once 'Zend/Gdata/Extension.php';
  * @category   Zend
  * @package    Zend_Gdata
  * @subpackage Gdata
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Gdata_Extension_Rating extends Zend_Gdata_Extension
@@ -56,7 +56,7 @@ class Zend_Gdata_Extension_Rating extends Zend_Gdata_Extension
      * @param integer $value (optional) The value of the rating.
      */
     public function __construct($average = null, $min = null,
-                                $max = null, $numRaters = null, $value = null)
+            $max = null, $numRaters = null, $value = null)
     {
         parent::__construct();
         $this->_average = $average;
@@ -96,6 +96,35 @@ class Zend_Gdata_Extension_Rating extends Zend_Gdata_Extension
         }
 
         return $element;
+    }
+
+    /**
+     * Given a DOMNode representing an attribute, tries to map the data into
+     * instance members.  If no mapping is defined, the name and value are
+     * stored in an array.
+     *
+     * @param DOMNode $attribute The DOMNode attribute needed to be handled
+     */
+    protected function takeAttributeFromDOM($attribute)
+    {
+        switch ($attribute->localName) {
+            case 'min':
+                $this->_min = $attribute->nodeValue;
+                break;
+            case 'max':
+                $this->_max = $attribute->nodeValue;
+                break;
+            case 'numRaters':
+                $this->_numRaters = $attribute->nodeValue;
+                break;
+            case 'average':
+                $this->_average = $attribute->nodeValue;
+                break;
+            case 'value':
+                $this->_value = $attribute->nodeValue;
+            default:
+                parent::takeAttributeFromDOM($attribute);
+        }
     }
 
     /**
@@ -206,35 +235,6 @@ class Zend_Gdata_Extension_Rating extends Zend_Gdata_Extension
     {
         $this->_value = $value;
         return $this;
-    }
-
-    /**
-     * Given a DOMNode representing an attribute, tries to map the data into
-     * instance members.  If no mapping is defined, the name and value are
-     * stored in an array.
-     *
-     * @param DOMNode $attribute The DOMNode attribute needed to be handled
-     */
-    protected function takeAttributeFromDOM($attribute)
-    {
-        switch ($attribute->localName) {
-            case 'min':
-                $this->_min = $attribute->nodeValue;
-                break;
-            case 'max':
-                $this->_max = $attribute->nodeValue;
-                break;
-            case 'numRaters':
-                $this->_numRaters = $attribute->nodeValue;
-                break;
-            case 'average':
-                $this->_average = $attribute->nodeValue;
-                break;
-            case 'value':
-                $this->_value = $attribute->nodeValue;
-            default:
-                parent::takeAttributeFromDOM($attribute);
-        }
     }
 
 }

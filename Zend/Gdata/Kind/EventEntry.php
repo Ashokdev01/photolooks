@@ -15,7 +15,7 @@
  * @category   Zend
  * @package    Zend_Gdata
  * @subpackage Gdata
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  * @version    $Id$
  */
@@ -92,7 +92,7 @@ require_once 'Zend/Gdata/Extension/EntryLink.php';
  * @category   Zend
  * @package    Zend_Gdata
  * @subpackage Gdata
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Gdata_Kind_EventEntry extends Zend_Gdata_Entry
@@ -163,6 +163,78 @@ class Zend_Gdata_Kind_EventEntry extends Zend_Gdata_Entry
 
 
         return $element;
+    }
+
+    protected function takeChildFromDOM($child)
+    {
+        $absoluteNodeName = $child->namespaceURI . ':' . $child->localName;
+        switch ($absoluteNodeName) {
+        case $this->lookupNamespace('gd') . ':' . 'where';
+            $where = new Zend_Gdata_Extension_Where();
+            $where->transferFromDOM($child);
+            $this->_where[] = $where;
+            break;
+        case $this->lookupNamespace('gd') . ':' . 'when';
+            $when = new Zend_Gdata_Extension_When();
+            $when->transferFromDOM($child);
+            $this->_when[] = $when;
+            break;
+        case $this->lookupNamespace('gd') . ':' . 'who';
+            $who = new Zend_Gdata_Extension_Who();
+            $who ->transferFromDOM($child);
+            $this->_who[] = $who;
+            break;
+        case $this->lookupNamespace('gd') . ':' . 'recurrence';
+            $recurrence = new Zend_Gdata_Extension_Recurrence();
+            $recurrence->transferFromDOM($child);
+            $this->_recurrence = $recurrence;
+            break;
+        case $this->lookupNamespace('gd') . ':' . 'eventStatus';
+            $eventStatus = new Zend_Gdata_Extension_EventStatus();
+            $eventStatus->transferFromDOM($child);
+            $this->_eventStatus = $eventStatus;
+            break;
+        case $this->lookupNamespace('gd') . ':' . 'comments';
+            $comments = new Zend_Gdata_Extension_Comments();
+            $comments->transferFromDOM($child);
+            $this->_comments = $comments;
+            break;
+        case $this->lookupNamespace('gd') . ':' . 'transparency';
+            $transparency = new Zend_Gdata_Extension_Transparency();
+            $transparency ->transferFromDOM($child);
+            $this->_transparency = $transparency;
+            break;
+        case $this->lookupNamespace('gd') . ':' . 'visibility';
+            $visiblity = new Zend_Gdata_Extension_Visibility();
+            $visiblity ->transferFromDOM($child);
+            $this->_visibility = $visiblity;
+            break;
+        case $this->lookupNamespace('gd') . ':' . 'recurrenceException';
+            require_once 'Zend/Gdata/Extension/RecurrenceException.php';
+            $recurrenceException = new Zend_Gdata_Extension_RecurrenceException();
+            $recurrenceException ->transferFromDOM($child);
+            $this->_recurrenceException[] = $recurrenceException;
+            break;
+        case $this->lookupNamespace('gd') . ':' . 'originalEvent';
+            $originalEvent = new Zend_Gdata_Extension_OriginalEvent();
+            $originalEvent ->transferFromDOM($child);
+            $this->_originalEvent = $originalEvent;
+            break;
+        case $this->lookupNamespace('gd') . ':' . 'extendedProperty';
+            $extProp = new Zend_Gdata_Extension_ExtendedProperty();
+            $extProp->transferFromDOM($child);
+            $this->_extendedProperty[] = $extProp;
+            break;
+        case $this->lookupNamespace('gd') . ':' . 'entryLink':
+            $entryLink = new Zend_Gdata_Extension_EntryLink();
+            $entryLink->transferFromDOM($child);
+            $this->_entryLink = $entryLink;
+            break;
+
+        default:
+            parent::takeChildFromDOM($child);
+            break;
+        }
     }
 
     public function getWhen()
@@ -350,78 +422,6 @@ class Zend_Gdata_Kind_EventEntry extends Zend_Gdata_Entry
     {
         $this->_entryLink = $value;
         return $this;
-    }
-
-    protected function takeChildFromDOM($child)
-    {
-        $absoluteNodeName = $child->namespaceURI . ':' . $child->localName;
-        switch ($absoluteNodeName) {
-            case $this->lookupNamespace('gd') . ':' . 'where';
-                $where = new Zend_Gdata_Extension_Where();
-                $where->transferFromDOM($child);
-                $this->_where[] = $where;
-                break;
-            case $this->lookupNamespace('gd') . ':' . 'when';
-                $when = new Zend_Gdata_Extension_When();
-                $when->transferFromDOM($child);
-                $this->_when[] = $when;
-                break;
-            case $this->lookupNamespace('gd') . ':' . 'who';
-                $who = new Zend_Gdata_Extension_Who();
-                $who->transferFromDOM($child);
-                $this->_who[] = $who;
-                break;
-            case $this->lookupNamespace('gd') . ':' . 'recurrence';
-                $recurrence = new Zend_Gdata_Extension_Recurrence();
-                $recurrence->transferFromDOM($child);
-                $this->_recurrence = $recurrence;
-                break;
-            case $this->lookupNamespace('gd') . ':' . 'eventStatus';
-                $eventStatus = new Zend_Gdata_Extension_EventStatus();
-                $eventStatus->transferFromDOM($child);
-                $this->_eventStatus = $eventStatus;
-                break;
-            case $this->lookupNamespace('gd') . ':' . 'comments';
-                $comments = new Zend_Gdata_Extension_Comments();
-                $comments->transferFromDOM($child);
-                $this->_comments = $comments;
-                break;
-            case $this->lookupNamespace('gd') . ':' . 'transparency';
-                $transparency = new Zend_Gdata_Extension_Transparency();
-                $transparency->transferFromDOM($child);
-                $this->_transparency = $transparency;
-                break;
-            case $this->lookupNamespace('gd') . ':' . 'visibility';
-                $visiblity = new Zend_Gdata_Extension_Visibility();
-                $visiblity->transferFromDOM($child);
-                $this->_visibility = $visiblity;
-                break;
-            case $this->lookupNamespace('gd') . ':' . 'recurrenceException';
-                require_once 'Zend/Gdata/Extension/RecurrenceException.php';
-                $recurrenceException = new Zend_Gdata_Extension_RecurrenceException();
-                $recurrenceException->transferFromDOM($child);
-                $this->_recurrenceException[] = $recurrenceException;
-                break;
-            case $this->lookupNamespace('gd') . ':' . 'originalEvent';
-                $originalEvent = new Zend_Gdata_Extension_OriginalEvent();
-                $originalEvent->transferFromDOM($child);
-                $this->_originalEvent = $originalEvent;
-                break;
-            case $this->lookupNamespace('gd') . ':' . 'extendedProperty';
-                $extProp = new Zend_Gdata_Extension_ExtendedProperty();
-                $extProp->transferFromDOM($child);
-                $this->_extendedProperty[] = $extProp;
-                break;
-            case $this->lookupNamespace('gd') . ':' . 'entryLink':
-                $entryLink = new Zend_Gdata_Extension_EntryLink();
-                $entryLink->transferFromDOM($child);
-                $this->_entryLink = $entryLink;
-                break;
-
-            default:
-                parent::takeChildFromDOM($child);
-                break;
-        }
     }
 
 

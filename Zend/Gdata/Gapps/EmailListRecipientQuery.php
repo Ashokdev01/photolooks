@@ -16,7 +16,7 @@
  * @category   Zend
  * @package    Zend_Gdata
  * @subpackage Gapps
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  * @version    $Id$
  */
@@ -37,7 +37,7 @@ require_once('Zend/Gdata/Gapps/Query.php');
  * @category   Zend
  * @package    Zend_Gdata
  * @subpackage Gapps
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Gdata_Gapps_EmailListRecipientQuery extends Zend_Gdata_Gapps_Query
@@ -62,11 +62,36 @@ class Zend_Gdata_Gapps_EmailListRecipientQuery extends Zend_Gdata_Gapps_Query
      *          startRecipient property.
      */
     public function __construct($domain = null, $emailListName = null,
-                                $startRecipient = null)
+            $startRecipient = null)
     {
         parent::__construct($domain);
         $this->setEmailListName($emailListName);
         $this->setStartRecipient($startRecipient);
+    }
+
+    /**
+     * Set the email list name to query for. When set, only lists with a name
+     * matching this value will be returned in search results. Set to
+     * null to disable filtering by list name.
+     *
+     * @param string $value The email list name to filter search results by,
+     *          or null to disable.
+     */
+     public function setEmailListName($value)
+     {
+         $this->_emailListName = $value;
+     }
+
+    /**
+     * Get the email list name to query for. If no name is set, null will be
+     * returned.
+     *
+     * @param string $value The email list name to filter search results by,
+     *          or null if disabled.
+     */
+    public function getEmailListName()
+    {
+        return $this->_emailListName;
     }
 
     /**
@@ -83,31 +108,6 @@ class Zend_Gdata_Gapps_EmailListRecipientQuery extends Zend_Gdata_Gapps_Query
         } else {
             unset($this->_params['startRecipient']);
         }
-    }
-
-    /**
-     * Get the email list name to query for. If no name is set, null will be
-     * returned.
-     *
-     * @param string $value The email list name to filter search results by,
-     *          or null if disabled.
-     */
-    public function getEmailListName()
-    {
-        return $this->_emailListName;
-    }
-
-    /**
-     * Set the email list name to query for. When set, only lists with a name
-     * matching this value will be returned in search results. Set to
-     * null to disable filtering by list name.
-     *
-     * @param string $value The email list name to filter search results by,
-     *          or null to disable.
-     */
-    public function setEmailListName($value)
-    {
-        $this->_emailListName = $value;
     }
 
     /**
@@ -143,7 +143,7 @@ class Zend_Gdata_Gapps_EmailListRecipientQuery extends Zend_Gdata_Gapps_Query
         } else {
             require_once 'Zend/Gdata/App/InvalidArgumentException.php';
             throw new Zend_Gdata_App_InvalidArgumentException(
-                'EmailListName must not be null');
+                    'EmailListName must not be null');
         }
         $uri .= Zend_Gdata_Gapps::APPS_EMAIL_LIST_RECIPIENT_POSTFIX . '/';
         $uri .= $this->getQueryString();

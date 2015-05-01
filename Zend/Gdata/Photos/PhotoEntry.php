@@ -16,7 +16,7 @@
  * @category   Zend
  * @package    Zend_Gdata
  * @subpackage Photos
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  * @version    $Id$
  */
@@ -113,7 +113,7 @@ require_once 'Zend/Gdata/App/Extension/Category.php';
  * @category   Zend
  * @package    Zend_Gdata
  * @subpackage Photos
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Gdata_Photos_PhotoEntry extends Zend_Gdata_Media_Entry
@@ -281,6 +281,89 @@ class Zend_Gdata_Photos_PhotoEntry extends Zend_Gdata_Media_Entry
             $element->appendChild($this->_geoRssWhere->getDOM($element->ownerDocument));
         }
         return $element;
+    }
+
+    /**
+     * Creates individual Entry objects of the appropriate type and
+     * stores them as members of this entry based upon DOM data.
+     *
+     * @param DOMNode $child The DOMNode to process
+     */
+    protected function takeChildFromDOM($child)
+    {
+        $absoluteNodeName = $child->namespaceURI . ':' . $child->localName;
+
+        switch ($absoluteNodeName) {
+            case $this->lookupNamespace('gphoto') . ':' . 'albumid';
+                $albumId = new Zend_Gdata_Photos_Extension_AlbumId();
+                $albumId->transferFromDOM($child);
+                $this->_gphotoAlbumId = $albumId;
+                break;
+            case $this->lookupNamespace('gphoto') . ':' . 'id';
+                $id = new Zend_Gdata_Photos_Extension_Id();
+                $id->transferFromDOM($child);
+                $this->_gphotoId = $id;
+                break;
+            case $this->lookupNamespace('gphoto') . ':' . 'version';
+                $version = new Zend_Gdata_Photos_Extension_Version();
+                $version->transferFromDOM($child);
+                $this->_gphotoVersion = $version;
+                break;
+            case $this->lookupNamespace('gphoto') . ':' . 'width';
+                $width = new Zend_Gdata_Photos_Extension_Width();
+                $width->transferFromDOM($child);
+                $this->_gphotoWidth = $width;
+                break;
+            case $this->lookupNamespace('gphoto') . ':' . 'height';
+                $height = new Zend_Gdata_Photos_Extension_Height();
+                $height->transferFromDOM($child);
+                $this->_gphotoHeight = $height;
+                break;
+            case $this->lookupNamespace('gphoto') . ':' . 'size';
+                $size = new Zend_Gdata_Photos_Extension_Size();
+                $size->transferFromDOM($child);
+                $this->_gphotoSize = $size;
+                break;
+            case $this->lookupNamespace('gphoto') . ':' . 'client';
+                $client = new Zend_Gdata_Photos_Extension_Client();
+                $client->transferFromDOM($child);
+                $this->_gphotoClient = $client;
+                break;
+            case $this->lookupNamespace('gphoto') . ':' . 'checksum';
+                $checksum = new Zend_Gdata_Photos_Extension_Checksum();
+                $checksum->transferFromDOM($child);
+                $this->_gphotoChecksum = $checksum;
+                break;
+            case $this->lookupNamespace('gphoto') . ':' . 'timestamp';
+                $timestamp = new Zend_Gdata_Photos_Extension_Timestamp();
+                $timestamp->transferFromDOM($child);
+                $this->_gphotoTimestamp = $timestamp;
+                break;
+            case $this->lookupNamespace('gphoto') . ':' . 'commentingEnabled';
+                $commentingEnabled = new Zend_Gdata_Photos_Extension_CommentingEnabled();
+                $commentingEnabled->transferFromDOM($child);
+                $this->_gphotoCommentingEnabled = $commentingEnabled;
+                break;
+            case $this->lookupNamespace('gphoto') . ':' . 'commentCount';
+                $commentCount = new Zend_Gdata_Photos_Extension_CommentCount();
+                $commentCount->transferFromDOM($child);
+                $this->_gphotoCommentCount = $commentCount;
+                break;
+            case $this->lookupNamespace('exif') . ':' . 'tags';
+                $exifTags = new Zend_Gdata_Exif_Extension_Tags();
+                $exifTags->transferFromDOM($child);
+                $this->_exifTags = $exifTags;
+                break;
+            case $this->lookupNamespace('georss') . ':' . 'where';
+                $geoRssWhere = new Zend_Gdata_Geo_Extension_GeoRssWhere();
+                $geoRssWhere->transferFromDOM($child);
+                $this->_geoRssWhere = $geoRssWhere;
+                break;
+            default:
+                parent::takeChildFromDOM($child);
+                break;
+
+        }
     }
 
     /**
@@ -603,89 +686,6 @@ class Zend_Gdata_Photos_PhotoEntry extends Zend_Gdata_Media_Entry
     {
         $this->_mediaGroup = $value;
         return $this;
-    }
-
-    /**
-     * Creates individual Entry objects of the appropriate type and
-     * stores them as members of this entry based upon DOM data.
-     *
-     * @param DOMNode $child The DOMNode to process
-     */
-    protected function takeChildFromDOM($child)
-    {
-        $absoluteNodeName = $child->namespaceURI . ':' . $child->localName;
-
-        switch ($absoluteNodeName) {
-            case $this->lookupNamespace('gphoto') . ':' . 'albumid';
-                $albumId = new Zend_Gdata_Photos_Extension_AlbumId();
-                $albumId->transferFromDOM($child);
-                $this->_gphotoAlbumId = $albumId;
-                break;
-            case $this->lookupNamespace('gphoto') . ':' . 'id';
-                $id = new Zend_Gdata_Photos_Extension_Id();
-                $id->transferFromDOM($child);
-                $this->_gphotoId = $id;
-                break;
-            case $this->lookupNamespace('gphoto') . ':' . 'version';
-                $version = new Zend_Gdata_Photos_Extension_Version();
-                $version->transferFromDOM($child);
-                $this->_gphotoVersion = $version;
-                break;
-            case $this->lookupNamespace('gphoto') . ':' . 'width';
-                $width = new Zend_Gdata_Photos_Extension_Width();
-                $width->transferFromDOM($child);
-                $this->_gphotoWidth = $width;
-                break;
-            case $this->lookupNamespace('gphoto') . ':' . 'height';
-                $height = new Zend_Gdata_Photos_Extension_Height();
-                $height->transferFromDOM($child);
-                $this->_gphotoHeight = $height;
-                break;
-            case $this->lookupNamespace('gphoto') . ':' . 'size';
-                $size = new Zend_Gdata_Photos_Extension_Size();
-                $size->transferFromDOM($child);
-                $this->_gphotoSize = $size;
-                break;
-            case $this->lookupNamespace('gphoto') . ':' . 'client';
-                $client = new Zend_Gdata_Photos_Extension_Client();
-                $client->transferFromDOM($child);
-                $this->_gphotoClient = $client;
-                break;
-            case $this->lookupNamespace('gphoto') . ':' . 'checksum';
-                $checksum = new Zend_Gdata_Photos_Extension_Checksum();
-                $checksum->transferFromDOM($child);
-                $this->_gphotoChecksum = $checksum;
-                break;
-            case $this->lookupNamespace('gphoto') . ':' . 'timestamp';
-                $timestamp = new Zend_Gdata_Photos_Extension_Timestamp();
-                $timestamp->transferFromDOM($child);
-                $this->_gphotoTimestamp = $timestamp;
-                break;
-            case $this->lookupNamespace('gphoto') . ':' . 'commentingEnabled';
-                $commentingEnabled = new Zend_Gdata_Photos_Extension_CommentingEnabled();
-                $commentingEnabled->transferFromDOM($child);
-                $this->_gphotoCommentingEnabled = $commentingEnabled;
-                break;
-            case $this->lookupNamespace('gphoto') . ':' . 'commentCount';
-                $commentCount = new Zend_Gdata_Photos_Extension_CommentCount();
-                $commentCount->transferFromDOM($child);
-                $this->_gphotoCommentCount = $commentCount;
-                break;
-            case $this->lookupNamespace('exif') . ':' . 'tags';
-                $exifTags = new Zend_Gdata_Exif_Extension_Tags();
-                $exifTags->transferFromDOM($child);
-                $this->_exifTags = $exifTags;
-                break;
-            case $this->lookupNamespace('georss') . ':' . 'where';
-                $geoRssWhere = new Zend_Gdata_Geo_Extension_GeoRssWhere();
-                $geoRssWhere->transferFromDOM($child);
-                $this->_geoRssWhere = $geoRssWhere;
-                break;
-            default:
-                parent::takeChildFromDOM($child);
-                break;
-
-        }
     }
 
 }

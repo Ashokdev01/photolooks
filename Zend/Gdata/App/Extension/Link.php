@@ -16,7 +16,7 @@
  * @category   Zend
  * @package    Zend_Gdata
  * @subpackage App
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  * @version    $Id$
  */
@@ -32,7 +32,7 @@ require_once 'Zend/Gdata/Extension.php';
  * @category   Zend
  * @package    Zend_Gdata
  * @subpackage App
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Gdata_App_Extension_Link extends Zend_Gdata_App_Extension
@@ -47,7 +47,7 @@ class Zend_Gdata_App_Extension_Link extends Zend_Gdata_App_Extension
     protected $_length = null;
 
     public function __construct($href = null, $rel = null, $type = null,
-                                $hrefLang = null, $title = null, $length = null)
+            $hrefLang = null, $title = null, $length = null)
     {
         parent::__construct();
         $this->_href = $href;
@@ -80,6 +80,32 @@ class Zend_Gdata_App_Extension_Link extends Zend_Gdata_App_Extension
             $element->setAttribute('length', $this->_length);
         }
         return $element;
+    }
+
+    protected function takeAttributeFromDOM($attribute)
+    {
+        switch ($attribute->localName) {
+        case 'href':
+            $this->_href = $attribute->nodeValue;
+            break;
+        case 'rel':
+            $this->_rel = $attribute->nodeValue;
+            break;
+        case 'type':
+            $this->_type = $attribute->nodeValue;
+            break;
+        case 'hreflang':
+            $this->_hrefLang = $attribute->nodeValue;
+            break;
+        case 'title':
+            $this->_title = $attribute->nodeValue;
+            break;
+        case 'length':
+            $this->_length = $attribute->nodeValue;
+            break;
+        default:
+            parent::takeAttributeFromDOM($attribute);
+        }
     }
 
     /**
@@ -188,32 +214,6 @@ class Zend_Gdata_App_Extension_Link extends Zend_Gdata_App_Extension
     {
         $this->_length = $value;
         return $this;
-    }
-
-    protected function takeAttributeFromDOM($attribute)
-    {
-        switch ($attribute->localName) {
-            case 'href':
-                $this->_href = $attribute->nodeValue;
-                break;
-            case 'rel':
-                $this->_rel = $attribute->nodeValue;
-                break;
-            case 'type':
-                $this->_type = $attribute->nodeValue;
-                break;
-            case 'hreflang':
-                $this->_hrefLang = $attribute->nodeValue;
-                break;
-            case 'title':
-                $this->_title = $attribute->nodeValue;
-                break;
-            case 'length':
-                $this->_length = $attribute->nodeValue;
-                break;
-            default:
-                parent::takeAttributeFromDOM($attribute);
-        }
     }
 
 }

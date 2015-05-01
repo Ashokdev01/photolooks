@@ -16,7 +16,7 @@
  * @category   Zend
  * @package    Zend_Gdata
  * @subpackage Gdata
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  * @version    $Id$
  */
@@ -38,7 +38,7 @@ require_once 'Zend/Gdata/App.php';
  * @category   Zend
  * @package    Zend_Gdata
  * @subpackage Gdata
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Gdata extends Zend_Gdata_App
@@ -50,6 +50,26 @@ class Zend_Gdata extends Zend_Gdata_App
      * @var string
      */
     const AUTH_SERVICE_NAME = 'xapi';
+
+    /**
+     * Default URI to which to POST.
+     *
+     * @var string
+     */
+    protected $_defaultPostUri = null;
+
+    /**
+     * Packages to search for classes when using magic __call method, in order.
+     *
+     * @var array
+     */
+    protected $_registeredPackages = array(
+            'Zend_Gdata_Kind',
+            'Zend_Gdata_Extension',
+            'Zend_Gdata',
+            'Zend_Gdata_App_Extension',
+            'Zend_Gdata_App');
+
     /**
      * Namespaces used for Gdata data
      *
@@ -61,35 +81,20 @@ class Zend_Gdata extends Zend_Gdata_App
         array('openSearch', 'http://a9.com/-/spec/opensearch/1.1/', 2, 0),
         array('rss', 'http://blogs.law.harvard.edu/tech/rss', 1, 0)
     );
-    /**
-     * Client object used to communicate in static context
-     *
-     * @var Zend_Gdata_HttpClient
-     */
-    protected static $_staticHttpClient = null;
-    /**
-     * Default URI to which to POST.
-     *
-     * @var string
-     */
-    protected $_defaultPostUri = null;
-    /**
-     * Packages to search for classes when using magic __call method, in order.
-     *
-     * @var array
-     */
-    protected $_registeredPackages = array(
-        'Zend_Gdata_Kind',
-        'Zend_Gdata_Extension',
-        'Zend_Gdata',
-        'Zend_Gdata_App_Extension',
-        'Zend_Gdata_App');
+
     /**
      * Client object used to communicate
      *
      * @var Zend_Gdata_HttpClient
      */
     protected $_httpClient;
+
+    /**
+     * Client object used to communicate in static context
+     *
+     * @var Zend_Gdata_HttpClient
+     */
+    protected static $_staticHttpClient = null;
 
     /**
      * Create Gdata object
@@ -116,7 +121,7 @@ class Zend_Gdata extends Zend_Gdata_App
      *                                    useObjectMapping() function.
      */
     public static function import($uri, $client = null,
-                                  $className = 'Zend_Gdata_Feed', $useObjectMapping = true)
+        $className='Zend_Gdata_Feed', $useObjectMapping = true)
     {
         $app = new Zend_Gdata($client);
         $requestData = $app->decodeRequest('GET', $uri);
@@ -129,6 +134,57 @@ class Zend_Gdata extends Zend_Gdata_App
             $feed->setHttpClient($client);
         }
         return $feed;
+    }
+
+    /**
+     * Retrieve feed as string or object
+     *
+     * @param mixed $location The location as string or Zend_Gdata_Query
+     * @param string $className The class type to use for returning the feed
+     * @throws Zend_Gdata_App_InvalidArgumentException
+     * @return string|Zend_Gdata_App_Feed Returns string only if the object
+     *                                    mapping has been disabled explicitly
+     *                                    by passing false to the
+     *                                    useObjectMapping() function.
+     */
+    public function getFeed($location, $className='Zend_Gdata_Feed')
+    {
+        if (is_string($location)) {
+            $uri = $location;
+        } elseif ($location instanceof Zend_Gdata_Query) {
+            $uri = $location->getQueryUrl();
+        } else {
+            require_once 'Zend/Gdata/App/InvalidArgumentException.php';
+            throw new Zend_Gdata_App_InvalidArgumentException(
+                    'You must specify the location as either a string URI ' .
+                    'or a child of Zend_Gdata_Query');
+        }
+        return parent::getFeed($uri, $className);
+    }
+
+    /**
+     * Retrieve entry as string or object
+     *
+     * @param mixed $location The location as string or Zend_Gdata_Query
+     * @throws Zend_Gdata_App_InvalidArgumentException
+     * @return string|Zend_Gdata_App_Entry Returns string only if the object
+     *                                     mapping has been disabled explicitly
+     *                                     by passing false to the
+     *                                     useObjectMapping() function.
+     */
+    public function getEntry($location, $className='Zend_Gdata_Entry')
+    {
+        if (is_string($location)) {
+            $uri = $location;
+        } elseif ($location instanceof Zend_Gdata_Query) {
+            $uri = $location->getQueryUrl();
+        } else {
+            require_once 'Zend/Gdata/App/InvalidArgumentException.php';
+            throw new Zend_Gdata_App_InvalidArgumentException(
+                    'You must specify the location as either a string URI ' .
+                    'or a child of Zend_Gdata_Query');
+        }
+        return parent::getEntry($uri, $className);
     }
 
     /**
@@ -167,57 +223,6 @@ class Zend_Gdata extends Zend_Gdata_App
     }
 
     /**
-     * Retrieve feed as string or object
-     *
-     * @param mixed $location The location as string or Zend_Gdata_Query
-     * @param string $className The class type to use for returning the feed
-     * @throws Zend_Gdata_App_InvalidArgumentException
-     * @return string|Zend_Gdata_App_Feed Returns string only if the object
-     *                                    mapping has been disabled explicitly
-     *                                    by passing false to the
-     *                                    useObjectMapping() function.
-     */
-    public function getFeed($location, $className = 'Zend_Gdata_Feed')
-    {
-        if (is_string($location)) {
-            $uri = $location;
-        } elseif ($location instanceof Zend_Gdata_Query) {
-            $uri = $location->getQueryUrl();
-        } else {
-            require_once 'Zend/Gdata/App/InvalidArgumentException.php';
-            throw new Zend_Gdata_App_InvalidArgumentException(
-                'You must specify the location as either a string URI ' .
-                'or a child of Zend_Gdata_Query');
-        }
-        return parent::getFeed($uri, $className);
-    }
-
-    /**
-     * Retrieve entry as string or object
-     *
-     * @param mixed $location The location as string or Zend_Gdata_Query
-     * @throws Zend_Gdata_App_InvalidArgumentException
-     * @return string|Zend_Gdata_App_Entry Returns string only if the object
-     *                                     mapping has been disabled explicitly
-     *                                     by passing false to the
-     *                                     useObjectMapping() function.
-     */
-    public function getEntry($location, $className = 'Zend_Gdata_Entry')
-    {
-        if (is_string($location)) {
-            $uri = $location;
-        } elseif ($location instanceof Zend_Gdata_Query) {
-            $uri = $location->getQueryUrl();
-        } else {
-            require_once 'Zend/Gdata/App/InvalidArgumentException.php';
-            throw new Zend_Gdata_App_InvalidArgumentException(
-                'You must specify the location as either a string URI ' .
-                'or a child of Zend_Gdata_Query');
-        }
-        return parent::getEntry($uri, $className);
-    }
-
-    /**
      * Determines whether service object is authenticated.
      *
      * @return boolean True if service object is authenticated, false otherwise.
@@ -226,9 +231,8 @@ class Zend_Gdata extends Zend_Gdata_App
     {
         $client = parent::getHttpClient();
         if ($client->getClientLoginToken() ||
-            $client->getAuthSubToken()
-        ) {
-            return true;
+            $client->getAuthSubToken()) {
+                return true;
         }
 
         return false;

@@ -16,7 +16,7 @@
  * @category   Zend
  * @package    Zend_Gdata
  * @subpackage Gdata
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  * @version    $Id$
  */
@@ -27,7 +27,7 @@
  * @category   Zend
  * @package    Zend_Gdata
  * @subpackage Gdata
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Gdata_MimeBodyString
@@ -65,17 +65,17 @@ class Zend_Gdata_MimeBodyString
      */
     public function read($bytesRequested)
     {
-        $len = strlen($this->_sourceString);
-        if ($this->_bytesRead == $len) {
-            return FALSE;
-        } else if ($bytesRequested > $len - $this->_bytesRead) {
-            $bytesRequested = $len - $this->_bytesRead;
-        }
+      $len = strlen($this->_sourceString);
+      if($this->_bytesRead == $len) {
+          return FALSE;
+      } else if($bytesRequested > $len - $this->_bytesRead) {
+          $bytesRequested = $len - $this->_bytesRead;
+      }
 
-        $buffer = substr($this->_sourceString, $this->_bytesRead, $bytesRequested);
-        $this->_bytesRead += $bytesRequested;
+      $buffer = substr($this->_sourceString, $this->_bytesRead, $bytesRequested);
+      $this->_bytesRead += $bytesRequested;
 
-        return $buffer;
+      return $buffer;
     }
 
     /**
@@ -85,7 +85,7 @@ class Zend_Gdata_MimeBodyString
      */
     public function getSize()
     {
-        return strlen($this->_sourceString);
+      return strlen($this->_sourceString);
     }
 
 

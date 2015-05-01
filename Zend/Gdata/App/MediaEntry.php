@@ -16,7 +16,7 @@
  * @category   Zend
  * @package    Zend_Gdata
  * @subpackage App
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  * @version    $Id$
  */
@@ -42,7 +42,7 @@ require_once 'Zend/Gdata/MediaMimeStream.php';
  * @category   Zend
  * @package    Zend_Gdata
  * @subpackage App
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Gdata_App_MediaEntry extends Zend_Gdata_App_Entry
@@ -111,7 +111,7 @@ class Zend_Gdata_App_MediaEntry extends Zend_Gdata_App_Entry
         } else {
             require_once 'Zend/Gdata/App/InvalidArgumentException.php';
             throw new Zend_Gdata_App_InvalidArgumentException(
-                'You must specify the media data as a class that conforms to Zend_Gdata_App_MediaSource.');
+                    'You must specify the media data as a class that conforms to Zend_Gdata_App_MediaSource.');
         }
         return $this;
     }

@@ -16,7 +16,7 @@
  * @category   Zend
  * @package    Zend_Gdata
  * @subpackage Spreadsheets
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  * @version    $Id$
  */
@@ -42,7 +42,7 @@ require_once 'Zend/Gdata/Spreadsheets/Extension/ColCount.php';
  * @category   Zend
  * @package    Zend_Gdata
  * @subpackage Spreadsheets
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Gdata_Spreadsheets_WorksheetEntry extends Zend_Gdata_Entry
@@ -87,6 +87,33 @@ class Zend_Gdata_Spreadsheets_WorksheetEntry extends Zend_Gdata_Entry
     }
 
     /**
+     * Creates individual Entry objects of the appropriate type and
+     * stores them in the $_entry array based upon DOM data.
+     *
+     * @param DOMNode $child The DOMNode to process
+     */
+    protected function takeChildFromDOM($child)
+    {
+        $absoluteNodeName = $child->namespaceURI . ':' . $child->localName;
+        switch ($absoluteNodeName) {
+            case $this->lookupNamespace('gs') . ':' . 'rowCount';
+                $rowCount = new Zend_Gdata_Spreadsheets_Extension_RowCount();
+                $rowCount->transferFromDOM($child);
+                $this->_rowCount = $rowCount;
+                break;
+            case $this->lookupNamespace('gs') . ':' . 'colCount';
+                $colCount = new Zend_Gdata_Spreadsheets_Extension_ColCount();
+                $colCount->transferFromDOM($child);
+                $this->_colCount = $colCount;
+                break;
+            default:
+                parent::takeChildFromDOM($child);
+                break;
+        }
+    }
+
+
+    /**
      * Gets the row count for this entry.
      *
      * @return string The row count for the entry.
@@ -94,6 +121,16 @@ class Zend_Gdata_Spreadsheets_WorksheetEntry extends Zend_Gdata_Entry
     public function getRowCount()
     {
         return $this->_rowCount;
+    }
+
+    /**
+     * Gets the column count for this entry.
+     *
+     * @return string The column count for the entry.
+     */
+    public function getColumnCount()
+    {
+        return $this->_colCount;
     }
 
     /**
@@ -105,16 +142,6 @@ class Zend_Gdata_Spreadsheets_WorksheetEntry extends Zend_Gdata_Entry
     {
         $this->_rowCount = $rowCount;
         return $this;
-    }
-
-    /**
-     * Gets the column count for this entry.
-     *
-     * @return string The column count for the entry.
-     */
-    public function getColumnCount()
-    {
-        return $this->_colCount;
     }
 
     /**
@@ -155,32 +182,6 @@ class Zend_Gdata_Spreadsheets_WorksheetEntry extends Zend_Gdata_Entry
     {
         $service = new Zend_Gdata_Spreadsheets($this->getHttpClient());
         return $service->getSpreadsheetCellFeedContents($this, $range, $empty);
-    }
-
-    /**
-     * Creates individual Entry objects of the appropriate type and
-     * stores them in the $_entry array based upon DOM data.
-     *
-     * @param DOMNode $child The DOMNode to process
-     */
-    protected function takeChildFromDOM($child)
-    {
-        $absoluteNodeName = $child->namespaceURI . ':' . $child->localName;
-        switch ($absoluteNodeName) {
-            case $this->lookupNamespace('gs') . ':' . 'rowCount';
-                $rowCount = new Zend_Gdata_Spreadsheets_Extension_RowCount();
-                $rowCount->transferFromDOM($child);
-                $this->_rowCount = $rowCount;
-                break;
-            case $this->lookupNamespace('gs') . ':' . 'colCount';
-                $colCount = new Zend_Gdata_Spreadsheets_Extension_ColCount();
-                $colCount->transferFromDOM($child);
-                $this->_colCount = $colCount;
-                break;
-            default:
-                parent::takeChildFromDOM($child);
-                break;
-        }
     }
 
 }

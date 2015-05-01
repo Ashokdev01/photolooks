@@ -16,7 +16,7 @@
  * @category   Zend
  * @package    Zend_Gdata
  * @subpackage App
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  * @version    $Id$
  */
@@ -33,7 +33,7 @@ require_once 'Zend/Gdata/App/Extension.php';
  * @category   Zend
  * @package    Zend_Gdata
  * @subpackage App
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 abstract class Zend_Gdata_App_Extension_Text extends Zend_Gdata_App_Extension
@@ -58,35 +58,33 @@ abstract class Zend_Gdata_App_Extension_Text extends Zend_Gdata_App_Extension
         return $element;
     }
 
+    protected function takeAttributeFromDOM($attribute)
+    {
+        switch ($attribute->localName) {
+        case 'type':
+            $this->_type = $attribute->nodeValue;
+            break;
+        default:
+            parent::takeAttributeFromDOM($attribute);
+        }
+    }
+
+    /*
+     * @return Zend_Gdata_App_Extension_Type
+     */
     public function getType()
     {
         return $this->_type;
     }
 
     /*
-     * @return Zend_Gdata_App_Extension_Type
+     * @param string $value
+     * @return Zend_Gdata_App_Extension_Text Provides a fluent interface
      */
-
     public function setType($value)
     {
         $this->_type = $value;
         return $this;
-    }
-
-    /*
-     * @param string $value
-     * @return Zend_Gdata_App_Extension_Text Provides a fluent interface
-     */
-
-    protected function takeAttributeFromDOM($attribute)
-    {
-        switch ($attribute->localName) {
-            case 'type':
-                $this->_type = $attribute->nodeValue;
-                break;
-            default:
-                parent::takeAttributeFromDOM($attribute);
-        }
     }
 
 }

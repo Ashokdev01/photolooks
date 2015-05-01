@@ -15,7 +15,7 @@
  * @category   Zend
  * @package    Zend_Gdata
  * @subpackage YouTube
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  * @version    $Id$
  */
@@ -37,7 +37,7 @@ require_once 'Zend/Gdata/YouTube/Extension/State.php';
  * @category   Zend
  * @package    Zend_Gdata
  * @subpackage YouTube
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Gdata_YouTube_Extension_Control extends Zend_Gdata_App_Extension_Control
@@ -78,13 +78,24 @@ class Zend_Gdata_YouTube_Extension_Control extends Zend_Gdata_App_Extension_Cont
     }
 
     /**
-     * Get the value of this element's state attribute.
+     * Creates individual Entry objects of the appropriate type and
+     * stores them as members of this entry based upon DOM data.
      *
-     * @return string The state's text value
+     * @param DOMNode $child The DOMNode to process
      */
-    public function getStateValue()
+    protected function takeChildFromDOM($child)
     {
-        return $this->getState()->getText();
+        $absoluteNodeName = $child->namespaceURI . ':' . $child->localName;
+        switch ($absoluteNodeName) {
+        case $this->lookupNamespace('yt') . ':' . 'state':
+            $state = new Zend_Gdata_YouTube_Extension_State();
+            $state->transferFromDOM($child);
+            $this->_state = $state;
+            break;
+        default:
+            parent::takeChildFromDOM($child);
+            break;
+        }
     }
 
     /**
@@ -110,24 +121,13 @@ class Zend_Gdata_YouTube_Extension_Control extends Zend_Gdata_App_Extension_Cont
     }
 
     /**
-     * Creates individual Entry objects of the appropriate type and
-     * stores them as members of this entry based upon DOM data.
-     *
-     * @param DOMNode $child The DOMNode to process
-     */
-    protected function takeChildFromDOM($child)
+    * Get the value of this element's state attribute.
+    *
+    * @return string The state's text value
+    */
+    public function getStateValue()
     {
-        $absoluteNodeName = $child->namespaceURI . ':' . $child->localName;
-        switch ($absoluteNodeName) {
-            case $this->lookupNamespace('yt') . ':' . 'state':
-                $state = new Zend_Gdata_YouTube_Extension_State();
-                $state->transferFromDOM($child);
-                $this->_state = $state;
-                break;
-            default:
-                parent::takeChildFromDOM($child);
-                break;
-        }
+      return $this->getState()->getText();
     }
 
 }

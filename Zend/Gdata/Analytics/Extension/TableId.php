@@ -15,7 +15,7 @@
  * @category   Zend
  * @package    Zend_Gdata
  * @subpackage Analytics
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  * @version    $Id$
  */
@@ -68,12 +68,15 @@ class Zend_Gdata_Analytics_Extension_TableId extends Zend_Gdata_Extension
     }
 
     /**
-     * Magic toString method allows using this directly via echo
-     * Works best in PHP >= 4.2.0
+     * Given a DOMNode representing an attribute, tries to map the data into
+     * instance members.  If no mapping is defined, the name and value are
+     * stored in an array.
+     *
+     * @param DOMNode $attribute The DOMNode attribute needed to be handled
      */
-    public function __toString()
+    protected function takeChildFromDOM($child)
     {
-        return $this->getValue();
+       $this->_value = $child->nodeValue;
     }
 
     /**
@@ -99,14 +102,11 @@ class Zend_Gdata_Analytics_Extension_TableId extends Zend_Gdata_Extension
     }
 
     /**
-     * Given a DOMNode representing an attribute, tries to map the data into
-     * instance members.  If no mapping is defined, the name and value are
-     * stored in an array.
-     *
-     * @param DOMNode $attribute The DOMNode attribute needed to be handled
+     * Magic toString method allows using this directly via echo
+     * Works best in PHP >= 4.2.0
      */
-    protected function takeChildFromDOM($child)
+    public function __toString()
     {
-        $this->_value = $child->nodeValue;
+        return $this->getValue();
     }
 }

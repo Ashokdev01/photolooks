@@ -16,7 +16,7 @@
  * @category   Zend
  * @package    Zend_Gdata
  * @subpackage App
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  * @version    $Id$
  */
@@ -37,11 +37,11 @@ require_once 'Zend/Gdata/App/FeedSourceParent.php';
  * @category   Zend
  * @package    Zend_Gdata
  * @subpackage App
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Gdata_App_Feed extends Zend_Gdata_App_FeedSourceParent
-    implements Iterator, ArrayAccess, Countable
+        implements Iterator, ArrayAccess, Countable
 {
 
     /**
@@ -102,6 +102,39 @@ class Zend_Gdata_App_Feed extends Zend_Gdata_App_FeedSourceParent
     }
 
     /**
+     * Creates individual Entry objects of the appropriate type and
+     * stores them in the $_entry array based upon DOM data.
+     *
+     * @param DOMNode $child The DOMNode to process
+     */
+    protected function takeChildFromDOM($child)
+    {
+        $absoluteNodeName = $child->namespaceURI . ':' . $child->localName;
+        switch ($absoluteNodeName) {
+        case $this->lookupNamespace('atom') . ':' . 'entry':
+            $newEntry = new $this->_entryClassName($child);
+            $newEntry->setHttpClient($this->getHttpClient());
+            $newEntry->setMajorProtocolVersion($this->getMajorProtocolVersion());
+            $newEntry->setMinorProtocolVersion($this->getMinorProtocolVersion());
+            $this->_entry[] = $newEntry;
+            break;
+        default:
+            parent::takeChildFromDOM($child);
+            break;
+        }
+    }
+
+    /**
+     * Get the number of entries in this feed object.
+     *
+     * @return integer Entry count.
+     */
+    public function count()
+    {
+        return count($this->_entry);
+    }
+
+    /**
      * Required by the Iterator interface.
      *
      * @return void
@@ -149,16 +182,6 @@ class Zend_Gdata_App_Feed extends Zend_Gdata_App_FeedSourceParent
     public function valid()
     {
         return 0 <= $this->_entryIndex && $this->_entryIndex < $this->count();
-    }
-
-    /**
-     * Get the number of entries in this feed object.
-     *
-     * @return integer Entry count.
-     */
-    public function count()
-    {
-        return count($this->_entry);
     }
 
     /**
@@ -247,7 +270,7 @@ class Zend_Gdata_App_Feed extends Zend_Gdata_App_FeedSourceParent
         return (array_key_exists($key, $this->_entry));
     }
 
-    /**
+   /**
      * Retrieve the next set of results from this feed.
      *
      * @throws Zend_Gdata_App_Exception
@@ -260,7 +283,7 @@ class Zend_Gdata_App_Feed extends Zend_Gdata_App_FeedSourceParent
         if (!$nextLink) {
             require_once 'Zend/Gdata/App/HttpException.php';
             throw new Zend_Gdata_App_Exception('No link to next set ' .
-                'of results found.');
+            'of results found.');
         }
         $nextLinkHref = $nextLink->getHref();
         $service = new Zend_Gdata_App($this->getHttpClient());
@@ -268,7 +291,7 @@ class Zend_Gdata_App_Feed extends Zend_Gdata_App_FeedSourceParent
         return $service->getFeed($nextLinkHref, get_class($this));
     }
 
-    /**
+   /**
      * Retrieve the previous set of results from this feed.
      *
      * @throws Zend_Gdata_App_Exception
@@ -281,7 +304,7 @@ class Zend_Gdata_App_Feed extends Zend_Gdata_App_FeedSourceParent
         if (!$previousLink) {
             require_once 'Zend/Gdata/App/HttpException.php';
             throw new Zend_Gdata_App_Exception('No link to previous set ' .
-                'of results found.');
+            'of results found.');
         }
         $previousLinkHref = $previousLink->getHref();
         $service = new Zend_Gdata_App($this->getHttpClient());
@@ -323,29 +346,6 @@ class Zend_Gdata_App_Feed extends Zend_Gdata_App_FeedSourceParent
         parent::setMinorProtocolVersion($value);
         foreach ($this->entries as $entry) {
             $entry->setMinorProtocolVersion($value);
-        }
-    }
-
-    /**
-     * Creates individual Entry objects of the appropriate type and
-     * stores them in the $_entry array based upon DOM data.
-     *
-     * @param DOMNode $child The DOMNode to process
-     */
-    protected function takeChildFromDOM($child)
-    {
-        $absoluteNodeName = $child->namespaceURI . ':' . $child->localName;
-        switch ($absoluteNodeName) {
-            case $this->lookupNamespace('atom') . ':' . 'entry':
-                $newEntry = new $this->_entryClassName($child);
-                $newEntry->setHttpClient($this->getHttpClient());
-                $newEntry->setMajorProtocolVersion($this->getMajorProtocolVersion());
-                $newEntry->setMinorProtocolVersion($this->getMinorProtocolVersion());
-                $this->_entry[] = $newEntry;
-                break;
-            default:
-                parent::takeChildFromDOM($child);
-                break;
         }
     }
 

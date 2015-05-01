@@ -16,7 +16,7 @@
  * @category   Zend
  * @package    Zend_Gdata
  * @subpackage Gdata
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  * @version    $Id$
  */
@@ -32,7 +32,7 @@ require_once 'Zend/Gdata/Extension.php';
  * @category   Zend
  * @package    Zend_Gdata
  * @subpackage Gdata
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Gdata_Extension_EventStatus extends Zend_Gdata_Extension
@@ -56,13 +56,15 @@ class Zend_Gdata_Extension_EventStatus extends Zend_Gdata_Extension
         return $element;
     }
 
-    /**
-     * Magic toString method allows using this directly via echo
-     * Works best in PHP >= 4.2.0
-     */
-    public function __toString()
+    protected function takeAttributeFromDOM($attribute)
     {
-        return $this->getValue();
+        switch ($attribute->localName) {
+        case 'value':
+            $this->_value = $attribute->nodeValue;
+            break;
+        default:
+            parent::takeAttributeFromDOM($attribute);
+        }
     }
 
     /**
@@ -87,15 +89,13 @@ class Zend_Gdata_Extension_EventStatus extends Zend_Gdata_Extension
         return $this;
     }
 
-    protected function takeAttributeFromDOM($attribute)
+    /**
+     * Magic toString method allows using this directly via echo
+     * Works best in PHP >= 4.2.0
+     */
+    public function __toString()
     {
-        switch ($attribute->localName) {
-            case 'value':
-                $this->_value = $attribute->nodeValue;
-                break;
-            default:
-                parent::takeAttributeFromDOM($attribute);
-        }
+        return $this->getValue();
     }
 
 }

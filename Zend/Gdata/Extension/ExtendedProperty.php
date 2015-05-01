@@ -16,7 +16,7 @@
  * @category   Zend
  * @package    Zend_Gdata
  * @subpackage Gdata
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  * @version    $Id$
  */
@@ -33,7 +33,7 @@ require_once 'Zend/Gdata/Extension.php';
  * @category   Zend
  * @package    Zend_Gdata
  * @subpackage Gdata
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Gdata_Extension_ExtendedProperty extends Zend_Gdata_Extension
@@ -62,6 +62,20 @@ class Zend_Gdata_Extension_ExtendedProperty extends Zend_Gdata_Extension
         return $element;
     }
 
+    protected function takeAttributeFromDOM($attribute)
+    {
+        switch ($attribute->localName) {
+        case 'name':
+            $this->_name = $attribute->nodeValue;
+            break;
+        case 'value':
+            $this->_value = $attribute->nodeValue;
+            break;
+        default:
+            parent::takeAttributeFromDOM($attribute);
+        }
+    }
+
     public function __toString()
     {
         return $this->getName() . '=' . $this->getValue();
@@ -87,20 +101,6 @@ class Zend_Gdata_Extension_ExtendedProperty extends Zend_Gdata_Extension
     {
         $this->_value = $value;
         return $this;
-    }
-
-    protected function takeAttributeFromDOM($attribute)
-    {
-        switch ($attribute->localName) {
-            case 'name':
-                $this->_name = $attribute->nodeValue;
-                break;
-            case 'value':
-                $this->_value = $attribute->nodeValue;
-                break;
-            default:
-                parent::takeAttributeFromDOM($attribute);
-        }
     }
 
 }

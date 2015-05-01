@@ -16,29 +16,29 @@
  * @category   Zend
  * @package    Zend_Gdata
  * @subpackage App
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  * @version    $Id$
  */
 
 /**
  * @see Zend_Gdata_App_Extension_Element
- */
+*/
 require_once 'Zend/Gdata/App/Extension/Element.php';
 
 /**
  * @see Zend_Gdata_App_Extension_Author
- */
+*/
 require_once 'Zend/Gdata/App/Extension/Author.php';
 
 /**
  * @see Zend_Gdata_App_Extension_Category
- */
+*/
 require_once 'Zend/Gdata/App/Extension/Category.php';
 
 /**
  * @see Zend_Gdata_App_Extension_Contributor
- */
+*/
 require_once 'Zend/Gdata/App/Extension/Contributor.php';
 
 /**
@@ -77,7 +77,7 @@ require_once 'Zend/Version.php';
  * @category   Zend
  * @package    Zend_Gdata
  * @subpackage App
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 abstract class Zend_Gdata_App_FeedEntryParent extends Zend_Gdata_App_Base
@@ -107,23 +107,23 @@ abstract class Zend_Gdata_App_FeedEntryParent extends Zend_Gdata_App_Base
     protected $_updated = null;
 
     /**
-     * Indicates the major protocol version that should be used.
-     * At present, recognized values are either 1 or 2. However, any integer
-     * value >= 1 is considered valid.
-     *
-     * @see setMajorProtocolVersion()
-     * @see getMajorProtocolVersion()
-     */
+      * Indicates the major protocol version that should be used.
+      * At present, recognized values are either 1 or 2. However, any integer
+      * value >= 1 is considered valid.
+      *
+      * @see setMajorProtocolVersion()
+      * @see getMajorProtocolVersion()
+      */
     protected $_majorProtocolVersion = 1;
 
     /**
-     * Indicates the minor protocol version that should be used. Can be set
-     * to either an integer >= 0, or NULL if no minor version should be sent
-     * to the server.
-     *
-     * @see setMinorProtocolVersion()
-     * @see getMinorProtocolVersion()
-     */
+      * Indicates the minor protocol version that should be used. Can be set
+      * to either an integer >= 0, or NULL if no minor version should be sent
+      * to the server.
+      *
+      * @see setMinorProtocolVersion()
+      * @see getMinorProtocolVersion()
+      */
     protected $_minorProtocolVersion = null;
 
     /**
@@ -177,18 +177,6 @@ abstract class Zend_Gdata_App_FeedEntryParent extends Zend_Gdata_App_Base
     }
 
     /**
-     * Get the active service instance for this object. This will be used to
-     * perform network requests, such as when calling save() and delete().
-     *
-     * @return Zend_Gdata_App|null The current service instance, or null if
-     *         not set.
-     */
-    public function getService()
-    {
-        return $this->_service;
-    }
-
-    /**
      * Set the active service instance for this object. This will be used to
      * perform network requests, such as when calling save() and delete().
      *
@@ -199,6 +187,18 @@ abstract class Zend_Gdata_App_FeedEntryParent extends Zend_Gdata_App_Base
     {
         $this->_service = $instance;
         return $this;
+    }
+
+    /**
+     * Get the active service instance for this object. This will be used to
+     * perform network requests, such as when calling save() and delete().
+     *
+     * @return Zend_Gdata_App|null The current service instance, or null if
+     *         not set.
+     */
+    public function getService()
+    {
+        return $this->_service;
     }
 
     public function getDOM($doc = null, $majorVersion = 1, $minorVersion = null)
@@ -229,6 +229,56 @@ abstract class Zend_Gdata_App_FeedEntryParent extends Zend_Gdata_App_Base
             $element->appendChild($this->_updated->getDOM($element->ownerDocument));
         }
         return $element;
+    }
+
+    protected function takeChildFromDOM($child)
+    {
+        $absoluteNodeName = $child->namespaceURI . ':' . $child->localName;
+        switch ($absoluteNodeName) {
+        case $this->lookupNamespace('atom') . ':' . 'author':
+            $author = new Zend_Gdata_App_Extension_Author();
+            $author->transferFromDOM($child);
+            $this->_author[] = $author;
+            break;
+        case $this->lookupNamespace('atom') . ':' . 'category':
+            $category = new Zend_Gdata_App_Extension_Category();
+            $category->transferFromDOM($child);
+            $this->_category[] = $category;
+            break;
+        case $this->lookupNamespace('atom') . ':' . 'contributor':
+            $contributor = new Zend_Gdata_App_Extension_Contributor();
+            $contributor->transferFromDOM($child);
+            $this->_contributor[] = $contributor;
+            break;
+        case $this->lookupNamespace('atom') . ':' . 'id':
+            $id = new Zend_Gdata_App_Extension_Id();
+            $id->transferFromDOM($child);
+            $this->_id = $id;
+            break;
+        case $this->lookupNamespace('atom') . ':' . 'link':
+            $link = new Zend_Gdata_App_Extension_Link();
+            $link->transferFromDOM($child);
+            $this->_link[] = $link;
+            break;
+        case $this->lookupNamespace('atom') . ':' . 'rights':
+            $rights = new Zend_Gdata_App_Extension_Rights();
+            $rights->transferFromDOM($child);
+            $this->_rights = $rights;
+            break;
+        case $this->lookupNamespace('atom') . ':' . 'title':
+            $title = new Zend_Gdata_App_Extension_Title();
+            $title->transferFromDOM($child);
+            $this->_title = $title;
+            break;
+        case $this->lookupNamespace('atom') . ':' . 'updated':
+            $updated = new Zend_Gdata_App_Extension_Updated();
+            $updated->transferFromDOM($child);
+            $this->_updated = $updated;
+            break;
+        default:
+            parent::takeChildFromDOM($child);
+            break;
+        }
     }
 
     /**
@@ -319,18 +369,6 @@ abstract class Zend_Gdata_App_FeedEntryParent extends Zend_Gdata_App_Base
     }
 
     /**
-     * Returns the Zend_Gdata_App_Extension_Link element which represents
-     * the URL used to edit this resource.  This link is in the atom feed/entry
-     * as an atom:link with a rel attribute value of 'edit'.
-     *
-     * @return Zend_Gdata_App_Extension_Link The link, or null if not found
-     */
-    public function getEditLink()
-    {
-        return $this->getLink('edit');
-    }
-
-    /**
      * Given a particular 'rel' value, this method returns a matching
      * Zend_Gdata_App_Extension_Link element.  If the 'rel' value
      * is not provided, the full array of Zend_Gdata_App_Extension_Link
@@ -360,13 +398,15 @@ abstract class Zend_Gdata_App_FeedEntryParent extends Zend_Gdata_App_Base
     }
 
     /**
-     * @param array $value The array of Zend_Gdata_App_Extension_Link elements
-     * @return Zend_Gdata_App_FeedEntryParent Provides a fluent interface
+     * Returns the Zend_Gdata_App_Extension_Link element which represents
+     * the URL used to edit this resource.  This link is in the atom feed/entry
+     * as an atom:link with a rel attribute value of 'edit'.
+     *
+     * @return Zend_Gdata_App_Extension_Link The link, or null if not found
      */
-    public function setLink($value)
+    public function getEditLink()
     {
-        $this->_link = $value;
-        return $this;
+        return $this->getLink('edit');
     }
 
     /**
@@ -433,6 +473,16 @@ abstract class Zend_Gdata_App_FeedEntryParent extends Zend_Gdata_App_Base
     }
 
     /**
+     * @param array $value The array of Zend_Gdata_App_Extension_Link elements
+     * @return Zend_Gdata_App_FeedEntryParent Provides a fluent interface
+     */
+    public function setLink($value)
+    {
+        $this->_link = $value;
+        return $this;
+    }
+
+    /**
      * @return Zend_Gdata_AppExtension_Rights
      */
     public function getRights()
@@ -451,6 +501,18 @@ abstract class Zend_Gdata_App_FeedEntryParent extends Zend_Gdata_App_Base
     }
 
     /**
+     * Returns the title of this feed or entry.  The title is an extremely
+     * short textual representation of this resource and is found as
+     * an atom:title element in a feed or entry
+     *
+     * @return Zend_Gdata_App_Extension_Title
+     */
+    public function getTitle()
+    {
+        return $this->_title;
+    }
+
+    /**
      * Returns a string representation of the title of this feed or entry.
      * The title is an extremely short textual representation of this
      * resource and is found as an atom:title element in a feed or entry
@@ -464,18 +526,6 @@ abstract class Zend_Gdata_App_FeedEntryParent extends Zend_Gdata_App_Base
         } else {
             return null;
         }
-    }
-
-    /**
-     * Returns the title of this feed or entry.  The title is an extremely
-     * short textual representation of this resource and is found as
-     * an atom:title element in a feed or entry
-     *
-     * @return Zend_Gdata_App_Extension_Title
-     */
-    public function getTitle()
-    {
-        return $this->_title;
     }
 
     /**
@@ -511,76 +561,85 @@ abstract class Zend_Gdata_App_FeedEntryParent extends Zend_Gdata_App_Base
     }
 
     /**
-     * Return the Etag for the current entry, or null if not set.
-     *
-     * @return string|null
-     */
-    public function getEtag()
-    {
-        return $this->_etag;
-    }
-
-    /**
      * Set the Etag for the current entry to $value. Setting $value to null
      * unsets the Etag.
      *
      * @param string|null $value
      * @return Zend_Gdata_App_Entry Provides a fluent interface
      */
-    public function setEtag($value)
-    {
+    public function setEtag($value) {
         $this->_etag = $value;
         return $this;
     }
 
-    protected function takeChildFromDOM($child)
+    /**
+     * Return the Etag for the current entry, or null if not set.
+     *
+     * @return string|null
+     */
+    public function getEtag() {
+        return $this->_etag;
+    }
+
+    /**
+     * Set the major protocol version that should be used. Values < 1
+     * (excluding NULL) will cause a Zend_Gdata_App_InvalidArgumentException
+     * to be thrown.
+     *
+     * @see _majorProtocolVersion
+     * @param (int|NULL) $value The major protocol version to use.
+     * @throws Zend_Gdata_App_InvalidArgumentException
+     */
+    public function setMajorProtocolVersion($value)
     {
-        $absoluteNodeName = $child->namespaceURI . ':' . $child->localName;
-        switch ($absoluteNodeName) {
-            case $this->lookupNamespace('atom') . ':' . 'author':
-                $author = new Zend_Gdata_App_Extension_Author();
-                $author->transferFromDOM($child);
-                $this->_author[] = $author;
-                break;
-            case $this->lookupNamespace('atom') . ':' . 'category':
-                $category = new Zend_Gdata_App_Extension_Category();
-                $category->transferFromDOM($child);
-                $this->_category[] = $category;
-                break;
-            case $this->lookupNamespace('atom') . ':' . 'contributor':
-                $contributor = new Zend_Gdata_App_Extension_Contributor();
-                $contributor->transferFromDOM($child);
-                $this->_contributor[] = $contributor;
-                break;
-            case $this->lookupNamespace('atom') . ':' . 'id':
-                $id = new Zend_Gdata_App_Extension_Id();
-                $id->transferFromDOM($child);
-                $this->_id = $id;
-                break;
-            case $this->lookupNamespace('atom') . ':' . 'link':
-                $link = new Zend_Gdata_App_Extension_Link();
-                $link->transferFromDOM($child);
-                $this->_link[] = $link;
-                break;
-            case $this->lookupNamespace('atom') . ':' . 'rights':
-                $rights = new Zend_Gdata_App_Extension_Rights();
-                $rights->transferFromDOM($child);
-                $this->_rights = $rights;
-                break;
-            case $this->lookupNamespace('atom') . ':' . 'title':
-                $title = new Zend_Gdata_App_Extension_Title();
-                $title->transferFromDOM($child);
-                $this->_title = $title;
-                break;
-            case $this->lookupNamespace('atom') . ':' . 'updated':
-                $updated = new Zend_Gdata_App_Extension_Updated();
-                $updated->transferFromDOM($child);
-                $this->_updated = $updated;
-                break;
-            default:
-                parent::takeChildFromDOM($child);
-                break;
+        if (!($value >= 1) && ($value !== null)) {
+            require_once('Zend/Gdata/App/InvalidArgumentException.php');
+            throw new Zend_Gdata_App_InvalidArgumentException(
+                    'Major protocol version must be >= 1');
         }
+        $this->_majorProtocolVersion = $value;
+    }
+
+    /**
+     * Get the major protocol version that is in use.
+     *
+     * @see _majorProtocolVersion
+     * @return (int|NULL) The major protocol version in use.
+     */
+    public function getMajorProtocolVersion()
+    {
+        return $this->_majorProtocolVersion;
+    }
+
+    /**
+     * Set the minor protocol version that should be used. If set to NULL, no
+     * minor protocol version will be sent to the server. Values < 0 will
+     * cause a Zend_Gdata_App_InvalidArgumentException to be thrown.
+     *
+     * @see _minorProtocolVersion
+     * @param (int|NULL) $value The minor protocol version to use.
+     * @throws Zend_Gdata_App_InvalidArgumentException
+     */
+    public function setMinorProtocolVersion($value)
+    {
+        if (!($value >= 0)) {
+            require_once('Zend/Gdata/App/InvalidArgumentException.php');
+            throw new Zend_Gdata_App_InvalidArgumentException(
+                    'Minor protocol version must be >= 0 or null');
+        }
+        $this->_minorProtocolVersion = $value;
+    }
+
+    /**
+     * Get the minor protocol version that is in use.
+     *
+     * @see _minorProtocolVersion
+     * @return (int|NULL) The major protocol version in use, or NULL if no
+     *         minor version is specified.
+     */
+    public function getMinorProtocolVersion()
+    {
+        return $this->_minorProtocolVersion;
     }
 
     /**
@@ -617,67 +676,6 @@ abstract class Zend_Gdata_App_FeedEntryParent extends Zend_Gdata_App_Base
 
         // Perform lookup
         return parent::lookupNamespace($prefix, $majorVersion, $minorVersion);
-    }
-
-    /**
-     * Get the major protocol version that is in use.
-     *
-     * @see _majorProtocolVersion
-     * @return (int|NULL) The major protocol version in use.
-     */
-    public function getMajorProtocolVersion()
-    {
-        return $this->_majorProtocolVersion;
-    }
-
-    /**
-     * Set the major protocol version that should be used. Values < 1
-     * (excluding NULL) will cause a Zend_Gdata_App_InvalidArgumentException
-     * to be thrown.
-     *
-     * @see _majorProtocolVersion
-     * @param (int|NULL) $value The major protocol version to use.
-     * @throws Zend_Gdata_App_InvalidArgumentException
-     */
-    public function setMajorProtocolVersion($value)
-    {
-        if (!($value >= 1) && ($value !== null)) {
-            require_once('Zend/Gdata/App/InvalidArgumentException.php');
-            throw new Zend_Gdata_App_InvalidArgumentException(
-                'Major protocol version must be >= 1');
-        }
-        $this->_majorProtocolVersion = $value;
-    }
-
-    /**
-     * Get the minor protocol version that is in use.
-     *
-     * @see _minorProtocolVersion
-     * @return (int|NULL) The major protocol version in use, or NULL if no
-     *         minor version is specified.
-     */
-    public function getMinorProtocolVersion()
-    {
-        return $this->_minorProtocolVersion;
-    }
-
-    /**
-     * Set the minor protocol version that should be used. If set to NULL, no
-     * minor protocol version will be sent to the server. Values < 0 will
-     * cause a Zend_Gdata_App_InvalidArgumentException to be thrown.
-     *
-     * @see _minorProtocolVersion
-     * @param (int|NULL) $value The minor protocol version to use.
-     * @throws Zend_Gdata_App_InvalidArgumentException
-     */
-    public function setMinorProtocolVersion($value)
-    {
-        if (!($value >= 0)) {
-            require_once('Zend/Gdata/App/InvalidArgumentException.php');
-            throw new Zend_Gdata_App_InvalidArgumentException(
-                'Minor protocol version must be >= 0 or null');
-        }
-        $this->_minorProtocolVersion = $value;
     }
 
 }

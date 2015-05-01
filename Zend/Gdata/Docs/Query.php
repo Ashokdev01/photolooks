@@ -16,7 +16,7 @@
  * @category   Zend
  * @package    Zend_Gdata
  * @subpackage Docs
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  * @version    $Id$
  */
@@ -34,7 +34,7 @@ require_once('Zend/Gdata/Query.php');
  * @category   Zend
  * @package    Zend_Gdata
  * @subpackage Docs
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Gdata_Docs_Query extends Zend_Gdata_Query
@@ -81,16 +81,6 @@ class Zend_Gdata_Docs_Query extends Zend_Gdata_Query
     }
 
     /**
-     * Gets the projection for this query.
-     *
-     * @return string projection
-     */
-    public function getProjection()
-    {
-        return $this->_projection;
-    }
-
-    /**
      * Sets the projection for this query. Common values for projection
      * include 'full'.
      *
@@ -104,16 +94,6 @@ class Zend_Gdata_Docs_Query extends Zend_Gdata_Query
     }
 
     /**
-     * Gets the visibility for this query.
-     *
-     * @return string visibility
-     */
-    public function getVisibility()
-    {
-        return $this->_visibility;
-    }
-
-    /**
      * Sets the visibility for this query. Common values for visibility
      * include 'private'.
      *
@@ -123,6 +103,26 @@ class Zend_Gdata_Docs_Query extends Zend_Gdata_Query
     {
         $this->_visibility = $value;
         return $this;
+    }
+
+    /**
+     * Gets the projection for this query.
+     *
+     * @return string projection
+     */
+    public function getProjection()
+    {
+        return $this->_projection;
+    }
+
+    /**
+     * Gets the visibility for this query.
+     *
+     * @return string visibility
+     */
+    public function getVisibility()
+    {
+        return $this->_visibility;
     }
 
     /**

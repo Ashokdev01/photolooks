@@ -16,7 +16,7 @@
  * @category   Zend
  * @package    Zend_Gdata
  * @subpackage YouTube
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  * @version    $Id$
  */
@@ -32,7 +32,7 @@ require_once 'Zend/Gdata/Extension.php';
  * @category   Zend
  * @package    Zend_Gdata
  * @subpackage YouTube
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Gdata_YouTube_Extension_Position extends Zend_Gdata_Extension
@@ -51,6 +51,16 @@ class Zend_Gdata_YouTube_Extension_Position extends Zend_Gdata_Extension
         $this->registerAllNamespaces(Zend_Gdata_YouTube::$namespaces);
         parent::__construct();
         $this->_text = $value;
+    }
+
+    /**
+     * Get the value for the position in the playlist
+     *
+     * @return int The 1-based position in the playlist
+     */
+    public function getValue()
+    {
+        return $this->_text;
     }
 
     /**
@@ -74,16 +84,6 @@ class Zend_Gdata_YouTube_Extension_Position extends Zend_Gdata_Extension
     public function __toString()
     {
         return $this->getValue();
-    }
-
-    /**
-     * Get the value for the position in the playlist
-     *
-     * @return int The 1-based position in the playlist
-     */
-    public function getValue()
-    {
-        return $this->_text;
     }
 
 }

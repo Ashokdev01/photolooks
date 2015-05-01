@@ -16,7 +16,7 @@
  * @package    Zend_Http
  * @subpackage Client_Adapter
  * @version    $Id$
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 
@@ -44,7 +44,7 @@ require_once 'Zend/Http/Client/Adapter/Interface.php';
  * @category   Zend
  * @package    Zend_Http
  * @subpackage Client_Adapter
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Http_Client_Adapter_Test implements Zend_Http_Client_Adapter_Interface
@@ -83,8 +83,7 @@ class Zend_Http_Client_Adapter_Test implements Zend_Http_Client_Adapter_Interfac
      *
      */
     public function __construct()
-    {
-    }
+    { }
 
     /**
      * Set the nextRequestWillFail flag
@@ -94,18 +93,41 @@ class Zend_Http_Client_Adapter_Test implements Zend_Http_Client_Adapter_Interfac
      */
     public function setNextRequestWillFail($flag)
     {
-        $this->_nextRequestWillFail = (bool)$flag;
+        $this->_nextRequestWillFail = (bool) $flag;
 
         return $this;
     }
 
     /**
+     * Set the configuration array for the adapter
+     *
+     * @param Zend_Config | array $config
+     */
+    public function setConfig($config = array())
+    {
+        if ($config instanceof Zend_Config) {
+            $config = $config->toArray();
+
+        } elseif (! is_array($config)) {
+            require_once 'Zend/Http/Client/Adapter/Exception.php';
+            throw new Zend_Http_Client_Adapter_Exception(
+                'Array or Zend_Config object expected, got ' . gettype($config)
+            );
+        }
+
+        foreach ($config as $k => $v) {
+            $this->config[strtolower($k)] = $v;
+        }
+    }
+
+
+    /**
      * Connect to the remote server
      *
-     * @param string $host
-     * @param int $port
+     * @param string  $host
+     * @param int     $port
      * @param boolean $secure
-     * @param int $timeout
+     * @param int     $timeout
      * @throws Zend_Http_Client_Adapter_Exception
      */
     public function connect($host, $port = 80, $secure = false)
@@ -120,17 +142,17 @@ class Zend_Http_Client_Adapter_Test implements Zend_Http_Client_Adapter_Interfac
     /**
      * Send request to the remote server
      *
-     * @param string $method
+     * @param string        $method
      * @param Zend_Uri_Http $uri
-     * @param string $http_ver
-     * @param array $headers
-     * @param string $body
+     * @param string        $http_ver
+     * @param array         $headers
+     * @param string        $body
      * @return string Request as string
      */
     public function write($method, $uri, $http_ver = '1.1', $headers = array(), $body = '')
     {
         $host = $uri->getHost();
-        $host = (strtolower($uri->getScheme()) == 'https' ? 'sslv2://' . $host : $host);
+            $host = (strtolower($uri->getScheme()) == 'https' ? 'sslv2://' . $host : $host);
 
         // Build request headers
         $path = $uri->getPath();
@@ -167,8 +189,7 @@ class Zend_Http_Client_Adapter_Test implements Zend_Http_Client_Adapter_Interfac
      *
      */
     public function close()
-    {
-    }
+    { }
 
     /**
      * Set the HTTP response(s) to be returned by this adapter
@@ -192,7 +213,7 @@ class Zend_Http_Client_Adapter_Test implements Zend_Http_Client_Adapter_Interfac
      */
     public function addResponse($response)
     {
-        if ($response instanceof Zend_Http_Response) {
+         if ($response instanceof Zend_Http_Response) {
             $response = $response->asString("\r\n");
         }
 
@@ -223,27 +244,5 @@ class Zend_Http_Client_Adapter_Test implements Zend_Http_Client_Adapter_Interfac
     public function getConfig()
     {
         return $this->config;
-    }
-
-    /**
-     * Set the configuration array for the adapter
-     *
-     * @param Zend_Config | array $config
-     */
-    public function setConfig($config = array())
-    {
-        if ($config instanceof Zend_Config) {
-            $config = $config->toArray();
-
-        } elseif (!is_array($config)) {
-            require_once 'Zend/Http/Client/Adapter/Exception.php';
-            throw new Zend_Http_Client_Adapter_Exception(
-                'Array or Zend_Config object expected, got ' . gettype($config)
-            );
-        }
-
-        foreach ($config as $k => $v) {
-            $this->config[strtolower($k)] = $v;
-        }
     }
 }

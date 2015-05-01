@@ -14,7 +14,7 @@
  *
  * @category  Zend
  * @package   Zend_Uri
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd     New BSD License
  * @version   $Id$
  */
@@ -35,7 +35,7 @@ require_once 'Zend/Validate/Hostname.php';
  * @category  Zend
  * @package   Zend_Uri
  * @uses      Zend_Uri
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Uri_Http extends Zend_Uri
@@ -43,11 +43,11 @@ class Zend_Uri_Http extends Zend_Uri
     /**
      * Character classes for validation regular expressions
      */
-    const CHAR_ALNUM = 'A-Za-z0-9';
-    const CHAR_MARK = '-_.!~*\'()\[\]';
+    const CHAR_ALNUM    = 'A-Za-z0-9';
+    const CHAR_MARK     = '-_.!~*\'()\[\]';
     const CHAR_RESERVED = ';\/?:@&=+$,';
-    const CHAR_SEGMENT = ':@&=+$,;';
-    const CHAR_UNWISE = '{}|\\\\^`';
+    const CHAR_SEGMENT  = ':@&=+$,;';
+    const CHAR_UNWISE   = '{}|\\\\^`';
 
     /**
      * HTTP username
@@ -109,7 +109,7 @@ class Zend_Uri_Http extends Zend_Uri
      * Constructor accepts a string $scheme (e.g., http, https) and a scheme-specific part of the URI
      * (e.g., example.com/path/to/resource?query=param#fragment)
      *
-     * @param  string $scheme The scheme of the URI
+     * @param  string $scheme         The scheme of the URI
      * @param  string $schemeSpecific The scheme-specific part of the URI
      * @throws Zend_Uri_Exception When the URI is not valid
      */
@@ -122,23 +122,23 @@ class Zend_Uri_Http extends Zend_Uri
         // are to be used with slash-delimited regular expression strings.
 
         // Escaped special characters (eg. '%25' for '%')
-        $this->_regex['escaped'] = '%[[:xdigit:]]{2}';
+        $this->_regex['escaped']    = '%[[:xdigit:]]{2}';
 
         // Unreserved characters
         $this->_regex['unreserved'] = '[' . self::CHAR_ALNUM . self::CHAR_MARK . ']';
 
         // Segment can use escaped, unreserved or a set of additional chars
-        $this->_regex['segment'] = '(?:' . $this->_regex['escaped'] . '|[' .
+        $this->_regex['segment']    = '(?:' . $this->_regex['escaped'] . '|[' .
             self::CHAR_ALNUM . self::CHAR_MARK . self::CHAR_SEGMENT . '])*';
 
         // Path can be a series of segmets char strings seperated by '/'
-        $this->_regex['path'] = '(?:\/(?:' . $this->_regex['segment'] . ')?)+';
+        $this->_regex['path']       = '(?:\/(?:' . $this->_regex['segment'] . ')?)+';
 
         // URI characters can be escaped, alphanumeric, mark or reserved chars
-        $this->_regex['uric'] = '(?:' . $this->_regex['escaped'] . '|[' .
+        $this->_regex['uric']       = '(?:' . $this->_regex['escaped'] . '|[' .
             self::CHAR_ALNUM . self::CHAR_MARK . self::CHAR_RESERVED .
 
-            // If unwise chars are allowed, add them to the URI chars class
+        // If unwise chars are allowed, add them to the URI chars class
             (self::$_config['allow_unwise'] ? self::CHAR_UNWISE : '') . '])';
 
         // If no scheme-specific part was supplied, the user intends to create
@@ -158,6 +158,36 @@ class Zend_Uri_Http extends Zend_Uri
     }
 
     /**
+     * Creates a Zend_Uri_Http from the given string
+     *
+     * @param  string $uri String to create URI from, must start with
+     *                     'http://' or 'https://'
+     * @throws InvalidArgumentException  When the given $uri is not a string or
+     *                                   does not start with http:// or https://
+     * @throws Zend_Uri_Exception        When the given $uri is invalid
+     * @return Zend_Uri_Http
+     */
+    public static function fromString($uri)
+    {
+        if (is_string($uri) === false) {
+            require_once 'Zend/Uri/Exception.php';
+            throw new Zend_Uri_Exception('$uri is not a string');
+        }
+
+        $uri            = explode(':', $uri, 2);
+        $scheme         = strtolower($uri[0]);
+        $schemeSpecific = isset($uri[1]) === true ? $uri[1] : '';
+
+        if (in_array($scheme, array('http', 'https')) === false) {
+            require_once 'Zend/Uri/Exception.php';
+            throw new Zend_Uri_Exception("Invalid scheme: '$scheme'");
+        }
+
+        $schemeHandler = new Zend_Uri_Http($scheme, $schemeSpecific);
+        return $schemeHandler;
+    }
+
+    /**
      * Parse the scheme-specific portion of the URI and place its parts into instance variables.
      *
      * @param  string $schemeSpecific The scheme-specific portion to parse
@@ -169,7 +199,7 @@ class Zend_Uri_Http extends Zend_Uri
     {
         // High-level decomposition parser
         $pattern = '~^((//)([^/?#]*))([^?#]*)(\?([^#]*))?(#(.*))?$~';
-        $status = @preg_match($pattern, $schemeSpecific, $matches);
+        $status  = @preg_match($pattern, $schemeSpecific, $matches);
         if ($status === false) {
             require_once 'Zend/Uri/Exception.php';
             throw new Zend_Uri_Exception('Internal error: scheme-specific decomposition failed');
@@ -181,26 +211,56 @@ class Zend_Uri_Http extends Zend_Uri
         }
 
         // Save URI components that need no further decomposition
-        $this->_path = isset($matches[4]) === true ? $matches[4] : '';
-        $this->_query = isset($matches[6]) === true ? $matches[6] : '';
+        $this->_path     = isset($matches[4]) === true ? $matches[4] : '';
+        $this->_query    = isset($matches[6]) === true ? $matches[6] : '';
         $this->_fragment = isset($matches[8]) === true ? $matches[8] : '';
 
         // Additional decomposition to get username, password, host, and port
-        $combo = isset($matches[3]) === true ? $matches[3] : '';
-        $pattern = '~^(([^:@]*)(:([^@]*))?@)?((?(?=[[])[[][^]]+[]]|[^:]+))(:(.*))?$~';
-        $status = @preg_match($pattern, $combo, $matches);
+        $combo   = isset($matches[3]) === true ? $matches[3] : '';
+        $pattern = '~^(([^:@]*)(:([^@]*))?@)?((?(?=[[])[[][^]]+[]]|[^:]+))(:(.*))?$~';        
+        $status  = @preg_match($pattern, $combo, $matches);
         if ($status === false) {
             require_once 'Zend/Uri/Exception.php';
             throw new Zend_Uri_Exception('Internal error: authority decomposition failed');
         }
-
+        
         // Save remaining URI components
         $this->_username = isset($matches[2]) === true ? $matches[2] : '';
         $this->_password = isset($matches[4]) === true ? $matches[4] : '';
-        $this->_host = isset($matches[5]) === true
-            ? preg_replace('~^\[([^]]+)\]$~', '\1', $matches[5])  // Strip wrapper [] from IPv6 literal
-            : '';
-        $this->_port = isset($matches[7]) === true ? $matches[7] : '';
+        $this->_host     = isset($matches[5]) === true 
+                         ? preg_replace('~^\[([^]]+)\]$~', '\1', $matches[5])  // Strip wrapper [] from IPv6 literal
+                         : '';
+        $this->_port     = isset($matches[7]) === true ? $matches[7] : '';
+    }
+
+    /**
+     * Returns a URI based on current values of the instance variables. If any
+     * part of the URI does not pass validation, then an exception is thrown.
+     *
+     * @throws Zend_Uri_Exception When one or more parts of the URI are invalid
+     * @return string
+     */
+    public function getUri()
+    {
+        if ($this->valid() === false) {
+            require_once 'Zend/Uri/Exception.php';
+            throw new Zend_Uri_Exception('One or more parts of the URI are invalid');
+        }
+
+        $password = strlen($this->_password) > 0 ? ":$this->_password" : '';
+        $auth     = strlen($this->_username) > 0 ? "$this->_username$password@" : '';
+        $port     = strlen($this->_port) > 0 ? ":$this->_port" : '';
+        $query    = strlen($this->_query) > 0 ? "?$this->_query" : '';
+        $fragment = strlen($this->_fragment) > 0 ? "#$this->_fragment" : '';
+
+        return $this->_scheme
+             . '://'
+             . $auth
+             . $this->_host
+             . $port
+             . $this->_path
+             . $query
+             . $fragment;
     }
 
     /**
@@ -213,12 +273,22 @@ class Zend_Uri_Http extends Zend_Uri
     {
         // Return true if and only if all parts of the URI have passed validation
         return $this->validateUsername()
-        and $this->validatePassword()
-        and $this->validateHost()
-        and $this->validatePort()
-        and $this->validatePath()
-        and $this->validateQuery()
-        and $this->validateFragment();
+           and $this->validatePassword()
+           and $this->validateHost()
+           and $this->validatePort()
+           and $this->validatePath()
+           and $this->validateQuery()
+           and $this->validateFragment();
+    }
+
+    /**
+     * Returns the username portion of the URL, or FALSE if none.
+     *
+     * @return string
+     */
+    public function getUsername()
+    {
+        return strlen($this->_username) > 0 ? $this->_username : false;
     }
 
     /**
@@ -251,6 +321,36 @@ class Zend_Uri_Http extends Zend_Uri
         }
 
         return $status === 1;
+    }
+
+    /**
+     * Sets the username for the current URI, and returns the old username
+     *
+     * @param  string $username The HTTP username
+     * @throws Zend_Uri_Exception When $username is not a valid HTTP username
+     * @return string
+     */
+    public function setUsername($username)
+    {
+        if ($this->validateUsername($username) === false) {
+            require_once 'Zend/Uri/Exception.php';
+            throw new Zend_Uri_Exception("Username \"$username\" is not a valid HTTP username");
+        }
+
+        $oldUsername     = $this->_username;
+        $this->_username = $username;
+
+        return $oldUsername;
+    }
+
+    /**
+     * Returns the password portion of the URL, or FALSE if none.
+     *
+     * @return string
+     */
+    public function getPassword()
+    {
+        return strlen($this->_password) > 0 ? $this->_password : false;
     }
 
     /**
@@ -291,6 +391,36 @@ class Zend_Uri_Http extends Zend_Uri
     }
 
     /**
+     * Sets the password for the current URI, and returns the old password
+     *
+     * @param  string $password The HTTP password
+     * @throws Zend_Uri_Exception When $password is not a valid HTTP password
+     * @return string
+     */
+    public function setPassword($password)
+    {
+        if ($this->validatePassword($password) === false) {
+            require_once 'Zend/Uri/Exception.php';
+            throw new Zend_Uri_Exception("Password \"$password\" is not a valid HTTP password.");
+        }
+
+        $oldPassword     = $this->_password;
+        $this->_password = $password;
+
+        return $oldPassword;
+    }
+
+    /**
+     * Returns the domain or host IP portion of the URL, or FALSE if none.
+     *
+     * @return string
+     */
+    public function getHost()
+    {
+        return strlen($this->_host) > 0 ? $this->_host : false;
+    }
+
+    /**
      * Returns true if and only if the host string passes validation. If no host is passed,
      * then the host contained in the instance variable is used.
      *
@@ -316,6 +446,36 @@ class Zend_Uri_Http extends Zend_Uri
     }
 
     /**
+     * Sets the host for the current URI, and returns the old host
+     *
+     * @param  string $host The HTTP host
+     * @throws Zend_Uri_Exception When $host is nota valid HTTP host
+     * @return string
+     */
+    public function setHost($host)
+    {
+        if ($this->validateHost($host) === false) {
+            require_once 'Zend/Uri/Exception.php';
+            throw new Zend_Uri_Exception("Host \"$host\" is not a valid HTTP host");
+        }
+
+        $oldHost     = $this->_host;
+        $this->_host = $host;
+
+        return $oldHost;
+    }
+
+    /**
+     * Returns the TCP port, or FALSE if none.
+     *
+     * @return string
+     */
+    public function getPort()
+    {
+        return strlen($this->_port) > 0 ? $this->_port : false;
+    }
+
+    /**
      * Returns true if and only if the TCP port string passes validation. If no port is passed,
      * then the port contained in the instance variable is used.
      *
@@ -334,7 +494,37 @@ class Zend_Uri_Http extends Zend_Uri
         }
 
         // Check the port against the allowed values
-        return ctype_digit((string)$port) and 1 <= $port and $port <= 65535;
+        return ctype_digit((string) $port) and 1 <= $port and $port <= 65535;
+    }
+
+    /**
+     * Sets the port for the current URI, and returns the old port
+     *
+     * @param  string $port The HTTP port
+     * @throws Zend_Uri_Exception When $port is not a valid HTTP port
+     * @return string
+     */
+    public function setPort($port)
+    {
+        if ($this->validatePort($port) === false) {
+            require_once 'Zend/Uri/Exception.php';
+            throw new Zend_Uri_Exception("Port \"$port\" is not a valid HTTP port.");
+        }
+
+        $oldPort     = $this->_port;
+        $this->_port = $port;
+
+        return $oldPort;
+    }
+
+    /**
+     * Returns the path and filename portion of the URL.
+     *
+     * @return string
+     */
+    public function getPath()
+    {
+        return strlen($this->_path) > 0 ? $this->_path : '/';
     }
 
     /**
@@ -358,13 +548,60 @@ class Zend_Uri_Http extends Zend_Uri
 
         // Determine whether the path is well-formed
         $pattern = '/^' . $this->_regex['path'] . '$/';
-        $status = @preg_match($pattern, $path);
+        $status  = @preg_match($pattern, $path);
         if ($status === false) {
             require_once 'Zend/Uri/Exception.php';
             throw new Zend_Uri_Exception('Internal error: path validation failed');
         }
 
-        return (boolean)$status;
+        return (boolean) $status;
+    }
+
+    /**
+     * Sets the path for the current URI, and returns the old path
+     *
+     * @param  string $path The HTTP path
+     * @throws Zend_Uri_Exception When $path is not a valid HTTP path
+     * @return string
+     */
+    public function setPath($path)
+    {
+        if ($this->validatePath($path) === false) {
+            require_once 'Zend/Uri/Exception.php';
+            throw new Zend_Uri_Exception("Path \"$path\" is not a valid HTTP path");
+        }
+
+        $oldPath     = $this->_path;
+        $this->_path = $path;
+
+        return $oldPath;
+    }
+
+    /**
+     * Returns the query portion of the URL (after ?), or FALSE if none.
+     *
+     * @return string
+     */
+    public function getQuery()
+    {
+        return strlen($this->_query) > 0 ? $this->_query : false;
+    }
+
+    /**
+     * Returns the query portion of the URL (after ?) as a
+     * key-value-array. If the query is empty an empty array
+     * is returned
+     *
+     * @return array
+     */
+    public function getQueryAsArray()
+    {
+        $query = $this->getQuery();
+        $querryArray = array();
+        if ($query !== false) {
+            parse_str($query, $querryArray);
+        }
+        return $querryArray;
     }
 
     /**
@@ -389,254 +626,13 @@ class Zend_Uri_Http extends Zend_Uri
 
         // Determine whether the query is well-formed
         $pattern = '/^' . $this->_regex['uric'] . '*$/';
-        $status = @preg_match($pattern, $query);
+        $status  = @preg_match($pattern, $query);
         if ($status === false) {
             require_once 'Zend/Uri/Exception.php';
             throw new Zend_Uri_Exception('Internal error: query validation failed');
         }
 
         return $status == 1;
-    }
-
-    /**
-     * Returns true if and only if the fragment passes validation. If no fragment is passed,
-     * then the fragment contained in the instance variable is used.
-     *
-     * @param  string $fragment Fragment of an URI
-     * @throws Zend_Uri_Exception When fragment validation fails
-     * @return boolean
-     * @link   http://www.faqs.org/rfcs/rfc2396.html
-     */
-    public function validateFragment($fragment = null)
-    {
-        if ($fragment === null) {
-            $fragment = $this->_fragment;
-        }
-
-        // If fragment is empty, it is considered to be valid
-        if (strlen($fragment) === 0) {
-            return true;
-        }
-
-        // Determine whether the fragment is well-formed
-        $pattern = '/^' . $this->_regex['uric'] . '*$/';
-        $status = @preg_match($pattern, $fragment);
-        if ($status === false) {
-            require_once 'Zend/Uri/Exception.php';
-            throw new Zend_Uri_Exception('Internal error: fragment validation failed');
-        }
-
-        return (boolean)$status;
-    }
-
-    /**
-     * Creates a Zend_Uri_Http from the given string
-     *
-     * @param  string $uri String to create URI from, must start with
-     *                     'http://' or 'https://'
-     * @throws InvalidArgumentException  When the given $uri is not a string or
-     *                                   does not start with http:// or https://
-     * @throws Zend_Uri_Exception        When the given $uri is invalid
-     * @return Zend_Uri_Http
-     */
-    public static function fromString($uri)
-    {
-        if (is_string($uri) === false) {
-            require_once 'Zend/Uri/Exception.php';
-            throw new Zend_Uri_Exception('$uri is not a string');
-        }
-
-        $uri = explode(':', $uri, 2);
-        $scheme = strtolower($uri[0]);
-        $schemeSpecific = isset($uri[1]) === true ? $uri[1] : '';
-
-        if (in_array($scheme, array('http', 'https')) === false) {
-            require_once 'Zend/Uri/Exception.php';
-            throw new Zend_Uri_Exception("Invalid scheme: '$scheme'");
-        }
-
-        $schemeHandler = new Zend_Uri_Http($scheme, $schemeSpecific);
-        return $schemeHandler;
-    }
-
-    /**
-     * Returns a URI based on current values of the instance variables. If any
-     * part of the URI does not pass validation, then an exception is thrown.
-     *
-     * @throws Zend_Uri_Exception When one or more parts of the URI are invalid
-     * @return string
-     */
-    public function getUri()
-    {
-        if ($this->valid() === false) {
-            require_once 'Zend/Uri/Exception.php';
-            throw new Zend_Uri_Exception('One or more parts of the URI are invalid');
-        }
-
-        $password = strlen($this->_password) > 0 ? ":$this->_password" : '';
-        $auth = strlen($this->_username) > 0 ? "$this->_username$password@" : '';
-        $port = strlen($this->_port) > 0 ? ":$this->_port" : '';
-        $query = strlen($this->_query) > 0 ? "?$this->_query" : '';
-        $fragment = strlen($this->_fragment) > 0 ? "#$this->_fragment" : '';
-
-        return $this->_scheme
-        . '://'
-        . $auth
-        . $this->_host
-        . $port
-        . $this->_path
-        . $query
-        . $fragment;
-    }
-
-    /**
-     * Returns the username portion of the URL, or FALSE if none.
-     *
-     * @return string
-     */
-    public function getUsername()
-    {
-        return strlen($this->_username) > 0 ? $this->_username : false;
-    }
-
-    /**
-     * Sets the username for the current URI, and returns the old username
-     *
-     * @param  string $username The HTTP username
-     * @throws Zend_Uri_Exception When $username is not a valid HTTP username
-     * @return string
-     */
-    public function setUsername($username)
-    {
-        if ($this->validateUsername($username) === false) {
-            require_once 'Zend/Uri/Exception.php';
-            throw new Zend_Uri_Exception("Username \"$username\" is not a valid HTTP username");
-        }
-
-        $oldUsername = $this->_username;
-        $this->_username = $username;
-
-        return $oldUsername;
-    }
-
-    /**
-     * Returns the password portion of the URL, or FALSE if none.
-     *
-     * @return string
-     */
-    public function getPassword()
-    {
-        return strlen($this->_password) > 0 ? $this->_password : false;
-    }
-
-    /**
-     * Sets the password for the current URI, and returns the old password
-     *
-     * @param  string $password The HTTP password
-     * @throws Zend_Uri_Exception When $password is not a valid HTTP password
-     * @return string
-     */
-    public function setPassword($password)
-    {
-        if ($this->validatePassword($password) === false) {
-            require_once 'Zend/Uri/Exception.php';
-            throw new Zend_Uri_Exception("Password \"$password\" is not a valid HTTP password.");
-        }
-
-        $oldPassword = $this->_password;
-        $this->_password = $password;
-
-        return $oldPassword;
-    }
-
-    /**
-     * Returns the domain or host IP portion of the URL, or FALSE if none.
-     *
-     * @return string
-     */
-    public function getHost()
-    {
-        return strlen($this->_host) > 0 ? $this->_host : false;
-    }
-
-    /**
-     * Sets the host for the current URI, and returns the old host
-     *
-     * @param  string $host The HTTP host
-     * @throws Zend_Uri_Exception When $host is nota valid HTTP host
-     * @return string
-     */
-    public function setHost($host)
-    {
-        if ($this->validateHost($host) === false) {
-            require_once 'Zend/Uri/Exception.php';
-            throw new Zend_Uri_Exception("Host \"$host\" is not a valid HTTP host");
-        }
-
-        $oldHost = $this->_host;
-        $this->_host = $host;
-
-        return $oldHost;
-    }
-
-    /**
-     * Returns the TCP port, or FALSE if none.
-     *
-     * @return string
-     */
-    public function getPort()
-    {
-        return strlen($this->_port) > 0 ? $this->_port : false;
-    }
-
-    /**
-     * Sets the port for the current URI, and returns the old port
-     *
-     * @param  string $port The HTTP port
-     * @throws Zend_Uri_Exception When $port is not a valid HTTP port
-     * @return string
-     */
-    public function setPort($port)
-    {
-        if ($this->validatePort($port) === false) {
-            require_once 'Zend/Uri/Exception.php';
-            throw new Zend_Uri_Exception("Port \"$port\" is not a valid HTTP port.");
-        }
-
-        $oldPort = $this->_port;
-        $this->_port = $port;
-
-        return $oldPort;
-    }
-
-    /**
-     * Returns the path and filename portion of the URL.
-     *
-     * @return string
-     */
-    public function getPath()
-    {
-        return strlen($this->_path) > 0 ? $this->_path : '/';
-    }
-
-    /**
-     * Sets the path for the current URI, and returns the old path
-     *
-     * @param  string $path The HTTP path
-     * @throws Zend_Uri_Exception When $path is not a valid HTTP path
-     * @return string
-     */
-    public function setPath($path)
-    {
-        if ($this->validatePath($path) === false) {
-            require_once 'Zend/Uri/Exception.php';
-            throw new Zend_Uri_Exception("Path \"$path\" is not a valid HTTP path");
-        }
-
-        $oldPath = $this->_path;
-        $this->_path = $path;
-
-        return $oldPath;
     }
 
     /**
@@ -653,30 +649,16 @@ class Zend_Uri_Http extends Zend_Uri
     }
 
     /**
-     * Returns the query portion of the URL (after ?) as a
-     * key-value-array. If the query is empty an empty array
-     * is returned
+     * Remove params in the query string for the current URI, and
+     * return the old query.
      *
-     * @return array
+     * @param  array $queryParamKeys
+     * @return string Old query string
      */
-    public function getQueryAsArray()
+    public function removeQueryParameters(array $queryParamKeys)
     {
-        $query = $this->getQuery();
-        $querryArray = array();
-        if ($query !== false) {
-            parse_str($query, $querryArray);
-        }
-        return $querryArray;
-    }
-
-    /**
-     * Returns the query portion of the URL (after ?), or FALSE if none.
-     *
-     * @return string
-     */
-    public function getQuery()
-    {
-        return strlen($this->_query) > 0 ? $this->_query : false;
+        $queryParams = array_diff_key($this->getQueryAsArray(), array_fill_keys($queryParamKeys, 0));
+        return $this->setQuery($queryParams);
     }
 
     /**
@@ -702,7 +684,7 @@ class Zend_Uri_Http extends Zend_Uri
             $query = http_build_query($query, '', '&');
         } else {
             // If it is a string, make sure it is valid. If not parse and encode it
-            $query = (string)$query;
+            $query = (string) $query;
             if ($this->validateQuery($query) === false) {
                 parse_str($query, $queryArray);
                 $query = http_build_query($queryArray, '', '&');
@@ -721,19 +703,6 @@ class Zend_Uri_Http extends Zend_Uri
     }
 
     /**
-     * Remove params in the query string for the current URI, and
-     * return the old query.
-     *
-     * @param  array $queryParamKeys
-     * @return string Old query string
-     */
-    public function removeQueryParameters(array $queryParamKeys)
-    {
-        $queryParams = array_diff_key($this->getQueryAsArray(), array_fill_keys($queryParamKeys, 0));
-        return $this->setQuery($queryParams);
-    }
-
-    /**
      * Returns the fragment portion of the URL (after #), or FALSE if none.
      *
      * @return string|false
@@ -741,6 +710,37 @@ class Zend_Uri_Http extends Zend_Uri
     public function getFragment()
     {
         return strlen($this->_fragment) > 0 ? $this->_fragment : false;
+    }
+
+    /**
+     * Returns true if and only if the fragment passes validation. If no fragment is passed,
+     * then the fragment contained in the instance variable is used.
+     *
+     * @param  string $fragment Fragment of an URI
+     * @throws Zend_Uri_Exception When fragment validation fails
+     * @return boolean
+     * @link   http://www.faqs.org/rfcs/rfc2396.html
+     */
+    public function validateFragment($fragment = null)
+    {
+        if ($fragment === null) {
+            $fragment = $this->_fragment;
+        }
+
+        // If fragment is empty, it is considered to be valid
+        if (strlen($fragment) === 0) {
+            return true;
+        }
+
+        // Determine whether the fragment is well-formed
+        $pattern = '/^' . $this->_regex['uric'] . '*$/';
+        $status  = @preg_match($pattern, $fragment);
+        if ($status === false) {
+            require_once 'Zend/Uri/Exception.php';
+            throw new Zend_Uri_Exception('Internal error: fragment validation failed');
+        }
+
+        return (boolean) $status;
     }
 
     /**
@@ -757,7 +757,7 @@ class Zend_Uri_Http extends Zend_Uri
             throw new Zend_Uri_Exception("Fragment \"$fragment\" is not a valid HTTP fragment");
         }
 
-        $oldFragment = $this->_fragment;
+        $oldFragment     = $this->_fragment;
         $this->_fragment = $fragment;
 
         return $oldFragment;

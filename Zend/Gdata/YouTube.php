@@ -16,7 +16,7 @@
  * @category   Zend
  * @package    Zend_Gdata
  * @subpackage YouTube
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  * @version    $Id$
  */
@@ -81,7 +81,7 @@ require_once 'Zend/Xml/Security.php';
  * @category   Zend
  * @package    Zend_Gdata
  * @subpackage YouTube
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Gdata_YouTube extends Zend_Gdata_Media
@@ -125,8 +125,8 @@ class Zend_Gdata_YouTube extends Zend_Gdata_Media
      *
      * @var string
      */
-    const IN_REPLY_TO_SCHEME =
-        'http://gdata.youtube.com/schemas/2007#in-reply-to';
+     const IN_REPLY_TO_SCHEME =
+         'http://gdata.youtube.com/schemas/2007#in-reply-to';
 
     /**
      * The URI of the inbox feed for the currently authenticated user.
@@ -202,8 +202,8 @@ class Zend_Gdata_YouTube extends Zend_Gdata_Media
      * @param string $developerKey The developerKey issued by the YouTube dashboard
      */
     public function __construct($client = null,
-                                $applicationId = 'MyCompany-MyApp-1.0', $clientId = null,
-                                $developerKey = null)
+        $applicationId = 'MyCompany-MyApp-1.0', $clientId = null,
+        $developerKey = null)
     {
         $this->registerPackage('Zend_Gdata_YouTube');
         $this->registerPackage('Zend_Gdata_YouTube_Extension');
@@ -222,8 +222,8 @@ class Zend_Gdata_YouTube extends Zend_Gdata_Media
      * @return Zend_Gdata_App Provides a fluent interface
      */
     public function setHttpClient($client,
-                                  $applicationId = 'MyCompany-MyApp-1.0', $clientId = null,
-                                  $developerKey = null)
+        $applicationId = 'MyCompany-MyApp-1.0', $clientId = null,
+        $developerKey = null)
     {
         if ($client === null) {
             $client = new Zend_Http_Client();
@@ -239,7 +239,7 @@ class Zend_Gdata_YouTube extends Zend_Gdata_Media
         }
 
         if ($developerKey != null) {
-            $client->setHeaders('X-GData-Key', 'key=' . $developerKey);
+            $client->setHeaders('X-GData-Key', 'key='. $developerKey);
         }
 
         return parent::setHttpClient($client, $applicationId);
@@ -279,7 +279,7 @@ class Zend_Gdata_YouTube extends Zend_Gdata_Media
      *         specified URL.
      */
     public function getVideoEntry($videoId = null, $location = null,
-                                  $fullEntry = false)
+        $fullEntry = false)
     {
         if ($videoId !== null) {
             if ($fullEntry) {
@@ -592,7 +592,7 @@ class Zend_Gdata_YouTube extends Zend_Gdata_Media
     {
         if ($user !== null) {
             $uri = self::USER_URI . '/' . $user . '/' .
-                self::UPLOADS_URI_SUFFIX;
+                   self::UPLOADS_URI_SUFFIX;
         } else if ($location instanceof Zend_Gdata_Query) {
             $uri = $location->getQueryUrl($this->getMajorProtocolVersion());
         } else {
@@ -613,7 +613,7 @@ class Zend_Gdata_YouTube extends Zend_Gdata_Media
     {
         if ($user !== null) {
             $uri = self::USER_URI . '/' . $user . '/' .
-                self::FAVORITES_URI_SUFFIX;
+                   self::FAVORITES_URI_SUFFIX;
         } else if ($location instanceof Zend_Gdata_Query) {
             $uri = $location->getQueryUrl($this->getMajorProtocolVersion());
         } else {
@@ -640,28 +640,6 @@ class Zend_Gdata_YouTube extends Zend_Gdata_Media
             $uri = $location;
         }
         return parent::getEntry($uri, 'Zend_Gdata_YouTube_UserProfileEntry');
-    }
-
-    /**
-     * Retrieves a YouTube token
-     *
-     * @param Zend_Gdata_YouTube_VideoEntry $videoEntry The video entry
-     * @param string $url The location as a string URL
-     * @throws Zend_Gdata_App_Exception
-     * @return array An array containing a token and URL
-     */
-    public function getFormUploadToken($videoEntry,
-                                       $url = 'https://gdata.youtube.com/action/GetUploadToken')
-    {
-        if ($url != null && is_string($url)) {
-            // $response is a Zend_Http_response object
-            $response = $this->post($videoEntry, $url);
-            return self::parseFormUploadTokenResponse($response->getBody());
-        } else {
-            require_once 'Zend/Gdata/App/Exception.php';
-            throw new Zend_Gdata_App_Exception(
-                'Url must be provided as a string URL');
-        }
     }
 
     /**
@@ -696,8 +674,7 @@ class Zend_Gdata_YouTube extends Zend_Gdata_Media
                 $responseElement->getElementsByTagName('token')->item(0);
 
             if ($urlElement && $urlElement->hasChildNodes() &&
-                $tokenElement && $tokenElement->hasChildNodes()
-            ) {
+                $tokenElement && $tokenElement->hasChildNodes()) {
 
                 $urlText = $urlElement->firstChild->nodeValue;
                 $tokenText = $tokenElement->firstChild->nodeValue;
@@ -710,6 +687,28 @@ class Zend_Gdata_YouTube extends Zend_Gdata_Media
             require_once 'Zend/Gdata/App/Exception.php';
             throw new Zend_Gdata_App_Exception(
                 'Form upload token not found in response');
+        }
+    }
+
+    /**
+     * Retrieves a YouTube token
+     *
+     * @param Zend_Gdata_YouTube_VideoEntry $videoEntry The video entry
+     * @param string $url The location as a string URL
+     * @throws Zend_Gdata_App_Exception
+     * @return array An array containing a token and URL
+     */
+    public function getFormUploadToken($videoEntry,
+        $url='https://gdata.youtube.com/action/GetUploadToken')
+    {
+        if ($url != null && is_string($url)) {
+            // $response is a Zend_Http_response object
+            $response = $this->post($videoEntry, $url);
+            return self::parseFormUploadTokenResponse($response->getBody());
+        } else {
+            require_once 'Zend/Gdata/App/Exception.php';
+            throw new Zend_Gdata_App_Exception(
+                'Url must be provided as a string URL');
         }
     }
 
@@ -735,12 +734,11 @@ class Zend_Gdata_YouTube extends Zend_Gdata_Media
             $uri = $username->getQueryUrl($this->getMajorProtocolVersion());
         } else {
             if (count(explode(',', $username)) >
-                self::ACTIVITY_FEED_MAX_USERS
-            ) {
+                self::ACTIVITY_FEED_MAX_USERS) {
                 require_once 'Zend/Gdata/App/InvalidArgumentException.php';
                 throw new Zend_Gdata_App_InvalidArgumentException(
                     'Activity feed can only retrieve for activity for up to ' .
-                    self::ACTIVITY_FEED_MAX_USERS . ' users per request');
+                    self::ACTIVITY_FEED_MAX_USERS .  ' users per request');
             }
             $uri = self::ACTIVITY_FEED_URI . '?author=' . $username;
         }
@@ -802,7 +800,7 @@ class Zend_Gdata_YouTube extends Zend_Gdata_Media
      *
      */
     public function sendVideoMessage($body, $videoEntry = null,
-                                     $videoId = null, $recipientUserName)
+        $videoId = null, $recipientUserName)
     {
         if (!$videoId && !$videoEntry) {
             require_once 'Zend/Gdata/App/InvalidArgumentException.php';
@@ -814,8 +812,7 @@ class Zend_Gdata_YouTube extends Zend_Gdata_Media
         $messageEntry = new Zend_Gdata_YouTube_InboxEntry();
 
         if ($this->getMajorProtocolVersion() == null ||
-            $this->getMajorProtocolVersion() == 1
-        ) {
+            $this->getMajorProtocolVersion() == 1) {
 
             if (!$videoId) {
                 $videoId = $videoEntry->getVideoId();
@@ -851,8 +848,8 @@ class Zend_Gdata_YouTube extends Zend_Gdata_Media
      *
      * @param Zend_Gdata_YouTube_CommentEntry $commentEntry The comment entry
      *         to reply to
-     * @param string $commentText The text of the
-     *         comment to post
+     * @param string                          $commentText  The text of the
+		 *         comment to post
      * @return Zend_Gdata_YouTube_CommentEntry the posted comment
      */
     public function replyToCommentEntry($commentEntry, $commentText)
@@ -866,7 +863,7 @@ class Zend_Gdata_YouTube extends Zend_Gdata_Media
         $inReplyToLinkHref = self::VIDEO_URI . '/' . $commentIdArray[3] .
             '/comments/' . $commentIdArray[5];
         $inReplyToLink = $this->newLink($inReplyToLinkHref,
-            self::IN_REPLY_TO_SCHEME, $type = "application/atom+xml");
+            self::IN_REPLY_TO_SCHEME, $type="application/atom+xml");
         $links = $newComment->getLink();
         $links[] = $inReplyToLink;
         $newComment->setLink($links);

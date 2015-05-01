@@ -16,7 +16,7 @@
  * @category   Zend
  * @package    Zend_Gdata
  * @subpackage Gapps
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  * @version    $Id$
  */
@@ -37,7 +37,7 @@ require_once('Zend/Gdata/Gapps/Query.php');
  * @category   Zend
  * @package    Zend_Gdata
  * @subpackage Gapps
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Gdata_Gapps_EmailListQuery extends Zend_Gdata_Gapps_Query
@@ -64,7 +64,7 @@ class Zend_Gdata_Gapps_EmailListQuery extends Zend_Gdata_Gapps_Query
      *          startEmailListName property.
      */
     public function __construct($domain = null, $emailListName = null,
-                                $recipient = null, $startEmailListName = null)
+            $recipient = null, $startEmailListName = null)
     {
         parent::__construct($domain);
         $this->setEmailListName($emailListName);
@@ -73,37 +73,17 @@ class Zend_Gdata_Gapps_EmailListQuery extends Zend_Gdata_Gapps_Query
     }
 
     /**
-     * Set the recipient to query for. When set, only subscribers with an
-     * email address matching this value will be returned in search results.
-     * Set to null to disable filtering by username.
+     * Set the email list name to query for. When set, only lists with a name
+     * matching this value will be returned in search results. Set to
+     * null to disable filtering by list name.
      *
-     * @param string $value The recipient email address to filter search
-     *              results by, or null to  disable.
+     * @param string $value The email list name to filter search results by,
+     *          or null to disable.
      */
-    public function setRecipient($value)
-    {
-        if ($value !== null) {
-            $this->_params['recipient'] = $value;
-        } else {
-            unset($this->_params['recipient']);
-        }
-    }
-
-    /**
-     * Set the first email list which should be displayed when retrieving
-     * a list of email lists.
-     *
-     * @param string $value The first email list to be returned, or null to
-     *              disable.
-     */
-    public function setStartEmailListName($value)
-    {
-        if ($value !== null) {
-            $this->_params['startEmailListName'] = $value;
-        } else {
-            unset($this->_params['startEmailListName']);
-        }
-    }
+     public function setEmailListName($value)
+     {
+         $this->_emailListName = $value;
+     }
 
     /**
      * Get the email list name to query for. If no name is set, null will be
@@ -119,16 +99,21 @@ class Zend_Gdata_Gapps_EmailListQuery extends Zend_Gdata_Gapps_Query
     }
 
     /**
-     * Set the email list name to query for. When set, only lists with a name
-     * matching this value will be returned in search results. Set to
-     * null to disable filtering by list name.
+     * Set the recipient to query for. When set, only subscribers with an
+     * email address matching this value will be returned in search results.
+     * Set to null to disable filtering by username.
      *
-     * @param string $value The email list name to filter search results by,
-     *          or null to disable.
+     * @param string $value The recipient email address to filter search
+     *              results by, or null to  disable.
      */
-    public function setEmailListName($value)
+    public function setRecipient($value)
     {
-        $this->_emailListName = $value;
+        if ($value !== null) {
+            $this->_params['recipient'] = $value;
+        }
+        else {
+            unset($this->_params['recipient']);
+        }
     }
 
     /**
@@ -145,6 +130,22 @@ class Zend_Gdata_Gapps_EmailListQuery extends Zend_Gdata_Gapps_Query
             return $this->_params['recipient'];
         } else {
             return null;
+        }
+    }
+
+    /**
+     * Set the first email list which should be displayed when retrieving
+     * a list of email lists.
+     *
+     * @param string $value The first email list to be returned, or null to
+     *              disable.
+     */
+    public function setStartEmailListName($value)
+    {
+        if ($value !== null) {
+            $this->_params['startEmailListName'] = $value;
+        } else {
+            unset($this->_params['startEmailListName']);
         }
     }
 

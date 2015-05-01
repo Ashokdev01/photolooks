@@ -15,7 +15,7 @@
  * @category   Zend
  * @package    Zend_Gdata
  * @subpackage Calendar
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  * @version    $Id$
  */
@@ -37,7 +37,7 @@ require_once 'Zend/Gdata/Calendar/Extension/WebContent.php';
  * @category   Zend
  * @package    Zend_Gdata
  * @subpackage Calendar
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Gdata_Calendar_Extension_Link extends Zend_Gdata_App_Extension_Link
@@ -51,7 +51,7 @@ class Zend_Gdata_Calendar_Extension_Link extends Zend_Gdata_App_Extension_Link
      * @param Zend_Gdata_Calendar_Extension_Webcontent $webContent
      */
     public function __construct($href = null, $rel = null, $type = null,
-                                $hrefLang = null, $title = null, $length = null, $webContent = null)
+            $hrefLang = null, $title = null, $length = null, $webContent = null)
     {
         $this->registerAllNamespaces(Zend_Gdata_Calendar::$namespaces);
         parent::__construct($href, $rel, $type, $hrefLang, $title, $length);
@@ -78,6 +78,27 @@ class Zend_Gdata_Calendar_Extension_Link extends Zend_Gdata_App_Extension_Link
     }
 
     /**
+     * Creates individual Entry objects of the appropriate type and
+     * stores them as members of this entry based upon DOM data.
+     *
+     * @param DOMNode $child The DOMNode to process
+     */
+    protected function takeChildFromDOM($child)
+    {
+        $absoluteNodeName = $child->namespaceURI . ':' . $child->localName;
+        switch ($absoluteNodeName) {
+        case $this->lookupNamespace('gCal') . ':' . 'webContent':
+            $webContent = new Zend_Gdata_Calendar_Extension_WebContent();
+            $webContent->transferFromDOM($child);
+            $this->_webContent = $webContent;
+            break;
+        default:
+            parent::takeChildFromDOM($child);
+            break;
+        }
+    }
+
+    /**
      * Get the value for this element's WebContent attribute.
      *
      * @return Zend_Gdata_Calendar_Extension_Webcontent The WebContent value
@@ -97,27 +118,6 @@ class Zend_Gdata_Calendar_Extension_Link extends Zend_Gdata_App_Extension_Link
     {
         $this->_webContent = $value;
         return $this;
-    }
-
-    /**
-     * Creates individual Entry objects of the appropriate type and
-     * stores them as members of this entry based upon DOM data.
-     *
-     * @param DOMNode $child The DOMNode to process
-     */
-    protected function takeChildFromDOM($child)
-    {
-        $absoluteNodeName = $child->namespaceURI . ':' . $child->localName;
-        switch ($absoluteNodeName) {
-            case $this->lookupNamespace('gCal') . ':' . 'webContent':
-                $webContent = new Zend_Gdata_Calendar_Extension_WebContent();
-                $webContent->transferFromDOM($child);
-                $this->_webContent = $webContent;
-                break;
-            default:
-                parent::takeChildFromDOM($child);
-                break;
-        }
     }
 
 

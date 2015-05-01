@@ -16,7 +16,7 @@
  * @category   Zend
  * @package    Zend_Gdata
  * @subpackage Gapps
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  * @version    $Id$
  */
@@ -39,7 +39,7 @@ require_once 'Zend/Gdata/Gapps.php';
  * @category   Zend
  * @package    Zend_Gdata
  * @subpackage Gapps
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Gdata_Gapps_Extension_Name extends Zend_Gdata_Extension
@@ -101,36 +101,24 @@ class Zend_Gdata_Gapps_Extension_Name extends Zend_Gdata_Extension
     }
 
     /**
-     * Magic toString method allows using this directly via echo
-     * Works best in PHP >= 4.2.0
-     */
-    public function __toString()
-    {
-        return $this->getGivenName() . ' ' . $this->getFamilyName();
-    }
-
-    /**
-     * Get the value for this element's givenName attribute.
+     * Given a DOMNode representing an attribute, tries to map the data into
+     * instance members.  If no mapping is defined, the name and value are
+     * stored in an array.
      *
-     * @see setGivenName
-     * @return string The requested attribute.
+     * @param DOMNode $attribute The DOMNode attribute needed to be handled
      */
-    public function getGivenName()
+    protected function takeAttributeFromDOM($attribute)
     {
-        return $this->_givenName;
-    }
-
-    /**
-     * Set the value for this element's givenName attribute. This
-     * represents a user's given name.
-     *
-     * @param string $value The desired value for this attribute.
-     * @return Zend_Gdata_Gapps_Extension_Name Provides a fluent interface.
-     */
-    public function setGivenName($value)
-    {
-        $this->_givenName = $value;
-        return $this;
+        switch ($attribute->localName) {
+        case 'familyName':
+            $this->_familyName = $attribute->nodeValue;
+            break;
+        case 'givenName':
+            $this->_givenName = $attribute->nodeValue;
+            break;
+        default:
+            parent::takeAttributeFromDOM($attribute);
+        }
     }
 
     /**
@@ -158,24 +146,36 @@ class Zend_Gdata_Gapps_Extension_Name extends Zend_Gdata_Extension
     }
 
     /**
-     * Given a DOMNode representing an attribute, tries to map the data into
-     * instance members.  If no mapping is defined, the name and value are
-     * stored in an array.
+     * Get the value for this element's givenName attribute.
      *
-     * @param DOMNode $attribute The DOMNode attribute needed to be handled
+     * @see setGivenName
+     * @return string The requested attribute.
      */
-    protected function takeAttributeFromDOM($attribute)
+    public function getGivenName()
     {
-        switch ($attribute->localName) {
-            case 'familyName':
-                $this->_familyName = $attribute->nodeValue;
-                break;
-            case 'givenName':
-                $this->_givenName = $attribute->nodeValue;
-                break;
-            default:
-                parent::takeAttributeFromDOM($attribute);
-        }
+        return $this->_givenName;
+    }
+
+    /**
+     * Set the value for this element's givenName attribute. This
+     * represents a user's given name.
+     *
+     * @param string $value The desired value for this attribute.
+     * @return Zend_Gdata_Gapps_Extension_Name Provides a fluent interface.
+     */
+    public function setGivenName($value)
+    {
+        $this->_givenName = $value;
+        return $this;
+    }
+
+    /**
+     * Magic toString method allows using this directly via echo
+     * Works best in PHP >= 4.2.0
+     */
+    public function __toString()
+    {
+        return $this->getGivenName() . ' ' . $this->getFamilyName();
     }
 
 }

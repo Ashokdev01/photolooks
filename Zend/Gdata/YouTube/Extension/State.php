@@ -16,7 +16,7 @@
  * @category   Zend
  * @package    Zend_Gdata
  * @subpackage YouTube
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  * @version    $Id$
  */
@@ -32,7 +32,7 @@ require_once 'Zend/Gdata/Extension.php';
  * @category   Zend
  * @package    Zend_Gdata
  * @subpackage YouTube
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Gdata_YouTube_Extension_State extends Zend_Gdata_Extension
@@ -47,10 +47,10 @@ class Zend_Gdata_YouTube_Extension_State extends Zend_Gdata_Extension
     /**
      * Constructs a new Zend_Gdata_YouTube_Extension_State object.
      *
-     * @param string $explanation (optional) The explanation of this state
-     * @param string $name (optional) The name value
-     * @param string $reasonCode (optional) The reasonCode value
-     * @param string $helpUrl (optional) The helpUrl value
+     * @param string $explanation(optional) The explanation of this state
+     * @param string $name(optional) The name value
+     * @param string $reasonCode(optional) The reasonCode value
+     * @param string $helpUrl(optional) The helpUrl value
      */
     public function __construct($explanation = null, $name = null,
                                 $reasonCode = null, $helpUrl = null)
@@ -86,6 +86,31 @@ class Zend_Gdata_YouTube_Extension_State extends Zend_Gdata_Extension
             $element->setAttribute('helpUrl', $this->_helpUrl);
         }
         return $element;
+    }
+
+    /**
+     * Given a DOMNode representing an attribute, tries to map the data into
+     * instance members.  If no mapping is defined, the name and valueare
+     * stored in an array.
+     * TODO: Convert attributes to proper types
+     *
+     * @param DOMNode $attribute The DOMNode attribute needed to be handled
+     */
+    protected function takeAttributeFromDOM($attribute)
+    {
+        switch ($attribute->localName) {
+        case 'name':
+            $this->_name = $attribute->nodeValue;
+            break;
+        case 'reasonCode':
+            $this->_reasonCode = $attribute->nodeValue;
+            break;
+        case 'helpUrl':
+            $this->_helpUrl = $attribute->nodeValue;
+            break;
+        default:
+            parent::takeAttributeFromDOM($attribute);
+        }
     }
 
     /**
@@ -163,31 +188,6 @@ class Zend_Gdata_YouTube_Extension_State extends Zend_Gdata_Extension
     public function __toString()
     {
         return $this->_text;
-    }
-
-    /**
-     * Given a DOMNode representing an attribute, tries to map the data into
-     * instance members.  If no mapping is defined, the name and valueare
-     * stored in an array.
-     * TODO: Convert attributes to proper types
-     *
-     * @param DOMNode $attribute The DOMNode attribute needed to be handled
-     */
-    protected function takeAttributeFromDOM($attribute)
-    {
-        switch ($attribute->localName) {
-            case 'name':
-                $this->_name = $attribute->nodeValue;
-                break;
-            case 'reasonCode':
-                $this->_reasonCode = $attribute->nodeValue;
-                break;
-            case 'helpUrl':
-                $this->_helpUrl = $attribute->nodeValue;
-                break;
-            default:
-                parent::takeAttributeFromDOM($attribute);
-        }
     }
 
 }

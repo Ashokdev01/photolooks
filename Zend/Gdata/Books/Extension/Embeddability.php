@@ -16,7 +16,7 @@
  * @category   Zend
  * @package    Zend_Gdata
  * @subpackage Books
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  * @version    $Id$
  */
@@ -32,7 +32,7 @@ require_once 'Zend/Gdata/Extension.php';
  * @category   Zend
  * @package    Zend_Gdata
  * @subpackage Books
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Gdata_Books_Extension_Embeddability extends Zend_Gdata_Extension
@@ -76,6 +76,23 @@ class Zend_Gdata_Books_Extension_Embeddability extends Zend_Gdata_Extension
     }
 
     /**
+     * Extracts XML attributes from the DOM and converts them to the
+     * appropriate object members.
+     *
+     * @param DOMNode $attribute The DOMNode attribute to be handled.
+     */
+    protected function takeAttributeFromDOM($attribute)
+    {
+        switch ($attribute->localName) {
+        case 'value':
+            $this->_value = $attribute->nodeValue;
+            break;
+        default:
+            parent::takeAttributeFromDOM($attribute);
+        }
+    }
+
+    /**
      * Returns the programmatic value that describes the embeddability of a
      * volume in Google Book Search
      *
@@ -99,23 +116,6 @@ class Zend_Gdata_Books_Extension_Embeddability extends Zend_Gdata_Extension
     {
         $this->_value = $value;
         return $this;
-    }
-
-    /**
-     * Extracts XML attributes from the DOM and converts them to the
-     * appropriate object members.
-     *
-     * @param DOMNode $attribute The DOMNode attribute to be handled.
-     */
-    protected function takeAttributeFromDOM($attribute)
-    {
-        switch ($attribute->localName) {
-            case 'value':
-                $this->_value = $attribute->nodeValue;
-                break;
-            default:
-                parent::takeAttributeFromDOM($attribute);
-        }
     }
 
 }

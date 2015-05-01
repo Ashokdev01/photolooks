@@ -16,7 +16,7 @@
  * @category   Zend
  * @package    Zend_Gdata
  * @subpackage Gapps
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  * @version    $Id$
  */
@@ -37,7 +37,7 @@ require_once('Zend/Gdata/Gapps/Query.php');
  * @category   Zend
  * @package    Zend_Gdata
  * @subpackage Gapps
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Gdata_Gapps_NicknameQuery extends Zend_Gdata_Gapps_Query
@@ -64,7 +64,7 @@ class Zend_Gdata_Gapps_NicknameQuery extends Zend_Gdata_Gapps_Query
      *          startNickname property.
      */
     public function __construct($domain = null, $nickname = null,
-                                $username = null, $startNickname = null)
+            $username = null, $startNickname = null)
     {
         parent::__construct($domain);
         $this->setNickname($nickname);
@@ -73,37 +73,17 @@ class Zend_Gdata_Gapps_NicknameQuery extends Zend_Gdata_Gapps_Query
     }
 
     /**
-     * Set the username to query for. When set, only users with a username
+     * Set the nickname to query for. When set, only users with a nickname
      * matching this value will be returned in search results. Set to
      * null to disable filtering by username.
      *
-     * @param string $value The username to filter search results by, or null
-     *          to disable.
+     * @param string $value The nickname to filter search results by, or null
+     *          to  disable.
      */
-    public function setUsername($value)
-    {
-        if ($value !== null) {
-            $this->_params['username'] = $value;
-        } else {
-            unset($this->_params['username']);
-        }
-    }
-
-    /**
-     * Set the first nickname which should be displayed when retrieving
-     * a list of nicknames.
-     *
-     * @param string $value The first nickname to be returned, or null to
-     *              disable.
-     */
-    public function setStartNickname($value)
-    {
-        if ($value !== null) {
-            $this->_params['startNickname'] = $value;
-        } else {
-            unset($this->_params['startNickname']);
-        }
-    }
+     public function setNickname($value)
+     {
+         $this->_nickname = $value;
+     }
 
     /**
      * Get the nickname to query for. If no nickname is set, null will be
@@ -119,16 +99,21 @@ class Zend_Gdata_Gapps_NicknameQuery extends Zend_Gdata_Gapps_Query
     }
 
     /**
-     * Set the nickname to query for. When set, only users with a nickname
+     * Set the username to query for. When set, only users with a username
      * matching this value will be returned in search results. Set to
      * null to disable filtering by username.
      *
-     * @param string $value The nickname to filter search results by, or null
-     *          to  disable.
+     * @param string $value The username to filter search results by, or null
+     *          to disable.
      */
-    public function setNickname($value)
+    public function setUsername($value)
     {
-        $this->_nickname = $value;
+        if ($value !== null) {
+            $this->_params['username'] = $value;
+        }
+        else {
+            unset($this->_params['username']);
+        }
     }
 
     /**
@@ -145,6 +130,22 @@ class Zend_Gdata_Gapps_NicknameQuery extends Zend_Gdata_Gapps_Query
             return $this->_params['username'];
         } else {
             return null;
+        }
+    }
+
+    /**
+     * Set the first nickname which should be displayed when retrieving
+     * a list of nicknames.
+     *
+     * @param string $value The first nickname to be returned, or null to
+     *              disable.
+     */
+    public function setStartNickname($value)
+    {
+        if ($value !== null) {
+            $this->_params['startNickname'] = $value;
+        } else {
+            unset($this->_params['startNickname']);
         }
     }
 

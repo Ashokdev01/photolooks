@@ -16,7 +16,7 @@
  * @category     Zend
  * @package      Zend_Gdata
  * @subpackage   Spreadsheets
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  * @version    $Id$
  */
@@ -37,7 +37,7 @@ require_once 'Zend/Gdata/Spreadsheets/Extension/Cell.php';
  * @category     Zend
  * @package      Zend_Gdata
  * @subpackage   Spreadsheets
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Gdata_Spreadsheets_CellEntry extends Zend_Gdata_Entry
@@ -66,6 +66,21 @@ class Zend_Gdata_Spreadsheets_CellEntry extends Zend_Gdata_Entry
         return $element;
     }
 
+    protected function takeChildFromDOM($child)
+    {
+        $absoluteNodeName = $child->namespaceURI . ':' . $child->localName;
+        switch ($absoluteNodeName) {
+        case $this->lookupNamespace('gs') . ':' . 'cell';
+            $cell = new Zend_Gdata_Spreadsheets_Extension_Cell();
+            $cell->transferFromDOM($child);
+            $this->_cell = $cell;
+            break;
+        default:
+            parent::takeChildFromDOM($child);
+            break;
+        }
+    }
+
     /**
      * Gets the Cell element of this Cell Entry.
      * @return Zend_Gdata_Spreadsheets_Extension_Cell
@@ -78,27 +93,12 @@ class Zend_Gdata_Spreadsheets_CellEntry extends Zend_Gdata_Entry
     /**
      * Sets the Cell element of this Cell Entry.
      * @param Zend_Gdata_Spreadsheets_Extension_Cell $cell
-     * @return Zend_Gdata_Spreadsheets_CellEntry
+		 * @return Zend_Gdata_Spreadsheets_CellEntry
      */
     public function setCell($cell)
     {
         $this->_cell = $cell;
         return $this;
-    }
-
-    protected function takeChildFromDOM($child)
-    {
-        $absoluteNodeName = $child->namespaceURI . ':' . $child->localName;
-        switch ($absoluteNodeName) {
-            case $this->lookupNamespace('gs') . ':' . 'cell';
-                $cell = new Zend_Gdata_Spreadsheets_Extension_Cell();
-                $cell->transferFromDOM($child);
-                $this->_cell = $cell;
-                break;
-            default:
-                parent::takeChildFromDOM($child);
-                break;
-        }
     }
 
 }
