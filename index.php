@@ -19,6 +19,7 @@ require_once("fbCredentials.php");
 
 <!-- Navigation -->
 <div id="fb-root"></div>
+<div class="loader" style="display: none;"></div>
 <div class="row">
     <div class="large-12 columns">
 
@@ -160,13 +161,7 @@ require_once("fbCredentials.php");
         </div>
     </div>
 </div>
-<div class="columns medium-4 borderd large-3">
-    <div>
-        <img src="assets/img/album2.png">
-    </div>
 
-    
-</div>
 
 
 <script src="assets/js/foundation.min.js"></script>
@@ -184,7 +179,7 @@ require_once("fbCredentials.php");
 <script type="text/javascript" src="assets/js/supersized.shutter.js"></script>
 <script>
     $(document).ready(function () {
-        $('#supersized-loader').hide();
+        $('#supersized-loader').remove();
         $('#supersized').hide();
     });
 </script>
