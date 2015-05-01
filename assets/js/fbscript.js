@@ -230,7 +230,8 @@ $(document).ready(function () {
 
     function show_albums_photos(albumid) {
 
-        $('#loading_gallery').show();
+       
+        $('.loader').show();
         $('#aft_login').hide();
         $('.top-bar').hide();
         // alert($('#album_' + albumid).length);
@@ -243,6 +244,8 @@ $(document).ready(function () {
             FB.api('/' + albumid + '/photos', function (response) {
                 var arrPhotos = [];
                 // console.log(response.data);
+               
+				$('#supersized').empty();
                 $.each(response.data, function (key, value) {
                     arrPhotos.push({
                         image: value.source,
@@ -251,7 +254,7 @@ $(document).ready(function () {
                         url: value.link
                     })
                 });
-                //  $('#loading_gallery').hide();
+                 $('.loader').hide();
                 jQuery(function ($) {
 
                     $.supersized({
@@ -265,10 +268,7 @@ $(document).ready(function () {
                     });
                 });
             });
-
-            $('#supersized-loader').show();
             $('#supersized').show();
-
             $('#slider').show();
 
 
@@ -278,17 +278,15 @@ $(document).ready(function () {
     }
 
     $('#backtoalbum').click(function () {
-
+		$('#progress-bar').stop().css({left: -$(window).width()});
+		$('.loader').hide();
         $('#slider').hide();
-
         $('#aft_login').show();
         $('.top-bar').show();
-
         $("#thumb-list").remove();
         $("#supersized").html('');
-
-        $('#supersized-loader').hide();
         $('#supersized').hide();
+      
 
 
     });
