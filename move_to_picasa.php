@@ -44,12 +44,7 @@
             <div class="left ">
                 <?php
 
-                /**
-                 * Created by PhpStorm.
-                 * User: sweet
-                 * Date: 27/1/15
-                 * Time: 11:05 AM
-                 */
+
 
                 session_start();
 
