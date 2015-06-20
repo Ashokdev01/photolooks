@@ -102,7 +102,7 @@ $(document).ready(function () {
     var fbAuthResp;
     window.fbAsyncInit = function () {
         FB.init({
-            appId: '932142060171589',
+            appId: '791420620939234',
             cookie: true,  // enable cookies to allow the server to access
                            // the session
             xfbml: true,  // parse social plugins on this page
